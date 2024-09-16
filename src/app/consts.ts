@@ -1,0 +1,23 @@
+export const dims = {
+  width: 320,
+  height: 180,
+}
+
+export const CITIES = [
+  {
+    name: "London",
+    population: 1000,
+  },
+  {
+    name: "Paris",
+    population: 2000,
+  },
+  {
+    name: "New York",
+    population: 3000,
+  },
+  {
+    name: "Tokyo",
+    population: 4000,
+  },
+]
