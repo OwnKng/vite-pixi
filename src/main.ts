@@ -3,15 +3,14 @@ import createApplication from "./app/index.ts"
 import { dims } from "./app/consts.ts"
 
 const container = document.querySelector<HTMLDivElement>("#app")!
-container.className = "w-screen h-screen flex justify-center items-center"
 
 const gamewindow = document.getElementById("gamewindow")!
 
-const desiredAspectRatio = 16 / 9 // Example aspect ratio (16:9)
+const desiredAspectRatio = dims.width / dims.height
 
 function resizeGameWindow() {
   const containerWidth = container.clientWidth
-  const containerHeight = container.clientHeight
+  const containerHeight = container.clientHeight - 32
 
   const containerAspectRatio = containerWidth / containerHeight
 
