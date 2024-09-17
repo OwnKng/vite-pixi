@@ -10,10 +10,8 @@ const cityView = createCityView()
 function createGameScreen() {
   let gamescreen = new Container()
 
-  const cards = createScrollingCards()
-  cards.scrollBox.x = 80
-  cards.scrollBox.y = 64
-  gamescreen.addChild(cards.scrollBox)
+  const cards = createScrollingCards(0, 80)
+  gamescreen.addChild(cards.container)
 
   const overlay = new Container()
   gamescreen.addChild(overlay)

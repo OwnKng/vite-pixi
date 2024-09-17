@@ -20,4 +20,12 @@ export const CITIES = [
     name: "Tokyo",
     population: 4000,
   },
+  {
+    name: "Beijing",
+    population: 5000,
+  },
+  {
+    name: "Hamburg",
+    population: 6000,
+  },
 ]
