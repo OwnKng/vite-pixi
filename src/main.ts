@@ -3,8 +3,18 @@ import createApplication from "./app/index.ts"
 import { dims } from "./app/consts.ts"
 
 const container = document.querySelector<HTMLDivElement>("#app")!
-
 const gamewindow = document.getElementById("gamewindow")!
+
+const fullscreenButton = document.getElementById("fullscreen")!
+fullscreenButton.addEventListener("click", toggleFullscreen)
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen()
+  } else {
+    document.exitFullscreen()
+  }
+}
 
 const desiredAspectRatio = dims.width / dims.height
 

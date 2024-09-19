@@ -1,20 +1,30 @@
 import { Container, Sprite } from "pixi.js"
 import { loadPlayingAssets } from "./loaders/assets"
 import { dims, CITIES } from "./consts"
-import { createScrollingCards } from "./cards"
+import { createCityCard } from "./cards"
 import { createCityEntity } from "./entities"
 import { createCityView } from "./views"
+import { createGrid } from "./layout/grid"
 
 const cityView = createCityView()
 
 function createGameScreen() {
   let gamescreen = new Container()
 
-  const cards = createScrollingCards(0, 80)
+  const cards = createGrid({
+    width: 320,
+    height: 96,
+    gap: 8,
+    scrollOffset: 8,
+  })
+
+  cards.container.position.y = 80
+
   gamescreen.addChild(cards.container)
 
   const overlay = new Container()
   gamescreen.addChild(overlay)
+
   overlay.addChild(cityView.container)
 
   async function init() {
@@ -31,12 +41,13 @@ function createGameScreen() {
 
     CITIES.forEach((city) => {
       const cityEntity = createCityEntity(city)
+      const card = createCityCard({ title: cityEntity.name })
 
-      cards.addItem(city.name, async () => await cityView.show(cityEntity))
+      card.container.on("pointerdown", () => cityView.show(cityEntity))
+
+      cards.addItem(card.container)
     })
   }
-
-  function newTurn() {}
 
   return {
     init,
