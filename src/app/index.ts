@@ -1,6 +1,7 @@
 import { Application, Container, Ticker } from "pixi.js"
 import { dims } from "./consts"
 import { gameScreen } from "./gamescreen"
+import { updatePipelineUi } from "./systems"
 
 export default function createApplication() {
   const app = new Application()
@@ -20,6 +21,8 @@ export default function createApplication() {
         app.renderer.width / dims.width,
         app.renderer.height / dims.height
       )
+
+      updatePipelineUi()
     }
   })
 

@@ -1,7 +1,8 @@
 import { Sprite, Container, Text } from "pixi.js"
 import { selected } from "../loaders/assets"
-import { City } from "../entities"
+import { addToPipeline, City } from "../entities"
 import gsap from "gsap"
+import { constructions } from "../data/buildings"
 
 type View = {
   container: Container
@@ -58,7 +59,10 @@ const createCityView = (): View => {
   }
 
   container.on("click", () => {
-    hide()
+    addToPipeline({
+      city: "London",
+      ...constructions["City wall"],
+    })
   })
 
   return {

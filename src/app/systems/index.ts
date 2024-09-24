@@ -1,24 +1,22 @@
 import { queries } from "../entities"
 
-export const endTurn = () => {
-  for (const city of queries.cities) {
-    city.underConstruction.forEach((constructionProject) => {
-      constructionProject.turns -= 1
-      if (constructionProject.turns <= 0) {
-        city.buildings.push({
-          name: constructionProject.name,
-          level: constructionProject.level,
-        })
-      }
+export const updatePipelineUi = () => {
+  let offset = 0
+
+  for (const pipeline of queries.pipeline) {
+    if (!pipeline.needsUpdate) continue
+    const { ui, construction } = pipeline
+
+    ui.container.removeChildren()
+
+    construction.forEach((construction) => {
+      const sprite = construction.sprite
+      sprite.x = offset
+      offset += sprite.width
+
+      ui.container.addChild(sprite)
     })
 
-    city.underConstruction = city.underConstruction.filter(
-      (project) => constructionProject.turns <= 0
-    )
-  }
-}
-
-export function turnStart() {
-  for (const entity of queries.cities) {
+    pipeline.needsUpdate = false
   }
 }

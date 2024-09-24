@@ -2,7 +2,7 @@ import { Container, Sprite } from "pixi.js"
 import { loadPlayingAssets } from "./loaders/assets"
 import { dims, CITIES } from "./consts"
 import { createCityCard } from "./cards"
-import { createCityEntity } from "./entities"
+import { createCityEntity, createPipeline } from "./entities"
 import { createCityView } from "./views"
 import { createGrid } from "./layout/grid"
 
@@ -38,6 +38,10 @@ function createGameScreen() {
     menuSprite.position.x = dims.width - menuSprite.width
 
     gamescreen.addChild(navigationSprite, menuSprite)
+
+    const pipeline = createPipeline()
+    pipeline.ui.addToWorld(gamescreen, 0, 0)
+    pipeline.ui.show()
 
     CITIES.forEach((city) => {
       const cityEntity = createCityEntity(city)

@@ -1,6 +1,8 @@
 import { World } from "miniplex"
-import { Container } from "pixi.js"
+import { Container, Sprite } from "pixi.js"
 import { createCityView } from "../views"
+import { createPipelineUi } from "../layout/pipeline"
+import { EntityUI } from "../layout/types"
 
 type Building = {
   name: string
@@ -10,18 +12,24 @@ type Building = {
 export type Construction = {
   name: string
   level: number
-  turns: number
-  turnsLeft: number
   cost: number
+  city: string
+  sprite: Sprite
 }
 
 export type City = {
   name: string
   population: number
   buildings: Building[]
-  underConstruction: Construction[]
   details: View
   summary: View
+}
+
+export type Pipeline = {
+  construction: Construction[]
+  readyForNext: boolean
+  ui: EntityUI
+  needsUpdate: boolean
 }
 
 export type View = {
@@ -37,20 +45,28 @@ export const world = new World()
 export const queries = {
   cities: world.with("name"),
   views: world.with("view"),
+  pipeline: world.with("construction"),
 }
 
-export type Entity = {
-  name: string
-  population: number
-  buildings: Building[]
-  underConstruction: Construction[]
+export const createPipeline = () =>
+  world.add({
+    construction: [],
+    readyForNext: false,
+    ui: createPipelineUi(),
+    needsUpdate: false,
+  })
+
+export const addToPipeline = (construction: Construction) => {
+  const pipeline = queries.pipeline.first
+  pipeline.construction.push(construction)
+
+  pipeline.needsUpdate = true
 }
 
 export const createCityEntity = ({
   name,
   population,
   buildings = [],
-  underConstruction = [],
 }: {
   name: string
   population: number
@@ -64,7 +80,6 @@ export const createCityEntity = ({
     name,
     population,
     buildings,
-    underConstruction,
     view: {
       hidden: true,
       ...view,
