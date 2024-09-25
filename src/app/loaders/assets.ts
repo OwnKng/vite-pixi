@@ -3,6 +3,8 @@ import navigationSrc from "../../assets/navigation.png"
 import menuSrc from "../../assets/menu.png"
 import cardSrc from "../../assets/card.png"
 import selectedSrc from "../../assets/selected.png"
+import pipelineSrc from "../../assets/pipeline.png"
+import lightSrc from "../../assets/light.png"
 import type { TextureSource } from "pixi.js"
 
 Assets.init({
@@ -39,11 +41,35 @@ Assets.init({
           },
         ],
       },
+      {
+        name: "pipeline",
+        assets: [
+          {
+            alias: "pipelineBackground",
+            src: pipelineSrc,
+          },
+        ],
+      },
+      {
+        name: "upgrades",
+        assets: [
+          {
+            alias: "light",
+            src: lightSrc,
+          },
+        ],
+      },
     ],
   },
 })
 
 export const loadPlayingAssets = async () => await Assets.loadBundle("playing")
+
+export const loadPipelineAssets = async () =>
+  await Assets.loadBundle("pipeline")
+
+export const loadUpgradesAssets = async () =>
+  await Assets.loadBundle("upgrades")
 
 export function createTileset(asset: TextureSource, w: number, h: number) {
   const rows = Math.floor(asset.height / h)

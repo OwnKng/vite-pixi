@@ -3,6 +3,7 @@ import { selected } from "../loaders/assets"
 import { addToPipeline, City } from "../entities"
 import gsap from "gsap"
 import { constructions } from "../data/buildings"
+import { createUpgrades } from "../layout/upgrades"
 
 type View = {
   container: Container
@@ -10,7 +11,7 @@ type View = {
   hide: () => void
 }
 
-const createCityView = (): View => {
+const createCityView = async (): Promise<View> => {
   const container = new Container()
   container.x = 16
   container.y = 32
@@ -33,6 +34,7 @@ const createCityView = (): View => {
   container.addChild(title)
 
   // Pipeline
+  const upgrades = await createUpgrades()
 
   // Buildings
 
@@ -62,6 +64,7 @@ const createCityView = (): View => {
     addToPipeline({
       city: "London",
       ...constructions["City wall"],
+      sprite: upgrades.getUpgradeSprite("light"),
     })
   })
 

@@ -9,12 +9,18 @@ type Building = {
   level: number
 }
 
-export type Construction = {
+export type Upgrade = {
   name: string
   level: number
   cost: number
   city: string
   sprite: Sprite
+}
+
+export type Player = {
+  name: string
+  money: number
+  health: number
 }
 
 export type City = {
@@ -26,7 +32,7 @@ export type City = {
 }
 
 export type Pipeline = {
-  construction: Construction[]
+  upgrades: Upgrade[]
   readyForNext: boolean
   ui: EntityUI
   needsUpdate: boolean
@@ -45,20 +51,39 @@ export const world = new World()
 export const queries = {
   cities: world.with("name"),
   views: world.with("view"),
-  pipeline: world.with("construction"),
+  pipeline: world.with("upgrades"),
+  player: world.with("money"),
 }
 
-export const createPipeline = () =>
+export const createPlayerEntity = () =>
+  world.add({ name: "Player", money: 1000, health: 100 })
+
+export const createPipeline = async () =>
   world.add({
-    construction: [],
+    upgrades: [],
     readyForNext: false,
-    ui: createPipelineUi(),
+    ui: await createPipelineUi(),
     needsUpdate: false,
   })
 
-export const addToPipeline = (construction: Construction) => {
+export const addToPipeline = (upgrade: Upgrade) => {
   const pipeline = queries.pipeline.first
-  pipeline.construction.push(construction)
+  pipeline.upgrades.push(upgrade)
+
+  for (const player of queries.player) {
+    player.money -= upgrade.cost
+  }
+
+  pipeline.needsUpdate = true
+}
+
+export const removeFromPipeline = (upgrade: Upgrade) => {
+  const pipeline = queries.pipeline.first
+  pipeline.upgrades = pipeline.upgrades.filter((u) => u !== upgrade)
+
+  for (const player of queries.player) {
+    player.money += upgrade.cost
+  }
 
   pipeline.needsUpdate = true
 }
@@ -72,7 +97,7 @@ export const createCityEntity = ({
   population: number
   buildings?: Building[]
   selected?: boolean
-  underConstruction?: Construction[]
+  underConstruction?: Upgrade[]
 }) => {
   const view = createCityView()
 

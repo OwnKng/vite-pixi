@@ -2,11 +2,15 @@ import { Container, Sprite } from "pixi.js"
 import { loadPlayingAssets } from "./loaders/assets"
 import { dims, CITIES } from "./consts"
 import { createCityCard } from "./cards"
-import { createCityEntity, createPipeline } from "./entities"
+import {
+  createCityEntity,
+  createPipeline,
+  createPlayerEntity,
+} from "./entities"
 import { createCityView } from "./views"
 import { createGrid } from "./layout/grid"
 
-const cityView = createCityView()
+const cityView = await createCityView()
 
 function createGameScreen() {
   let gamescreen = new Container()
@@ -39,7 +43,10 @@ function createGameScreen() {
 
     gamescreen.addChild(navigationSprite, menuSprite)
 
-    const pipeline = createPipeline()
+    //_ Player
+    const player = createPlayerEntity()
+
+    const pipeline = await createPipeline()
     pipeline.ui.addToWorld(gamescreen, 0, 0)
     pipeline.ui.show()
 

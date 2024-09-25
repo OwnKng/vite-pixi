@@ -1,23 +1,37 @@
-import { Container, Text } from "pixi.js"
+import { Container, Sprite, Text, TextStyle } from "pixi.js"
 import { EntityUI } from "./types"
+import { loadPipelineAssets } from "../loaders/assets"
 
-export const createPipelineUi = (): EntityUI => {
+export const createPipelineUi = async (): Promise<EntityUI> => {
+  const { pipelineBackground } = await loadPipelineAssets()
+
+  pipelineBackground.source.scaleMode = "nearest"
+  const pipelineSprite = Sprite.from(pipelineBackground)
+  pipelineSprite.y = 16
+
   const container = new Container()
   container.visible = false
 
-  const title = new Text({
-    text: "Pipeline",
-    style: { fontSize: 48, fill: 0xfffffe },
+  const textStyles = new TextStyle({
+    fontSize: 48,
+    fill: 0xfffffe,
+    textBaseline: "bottom",
   })
 
-  title.x = 2
-  title.y = 2
+  const title = new Text({
+    text: "Pipeline",
+    style: textStyles,
+  })
+
+  title.y = 8
   title.scale = 0.125
 
   container.addChild(title)
 
   const constructionContainer = new Container()
-  constructionContainer.y = 64
+  constructionContainer.y = 16
+  container.addChild(pipelineSprite)
+
   container.addChild(constructionContainer)
 
   const show = () => {
