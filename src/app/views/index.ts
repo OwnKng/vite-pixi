@@ -39,6 +39,23 @@ const createCityView = async (): Promise<SelectedCityView> => {
   // Pipeline
   const upgrades = await createUpgrades()
 
+  //_ Upgrades
+  const soliderButton = Sprite.from(upgrades.getUpgradeTexture("light"))
+  soliderButton.position.x = 16
+  soliderButton.position.y = 64
+
+  soliderButton.eventMode = "static"
+
+  soliderButton.on("pointerdown", () => {
+    addToPipeline({
+      city: selectedCity.name,
+      ...constructions["City wall"],
+      texture: upgrades.getUpgradeTexture("light"),
+    })
+  })
+
+  container.addChild(soliderButton)
+
   async function hide() {
     await gsap.to(container, {
       alpha: 0,
@@ -46,6 +63,7 @@ const createCityView = async (): Promise<SelectedCityView> => {
       duration: 0.125,
       ease: "power2.in",
     })
+
     container.visible = false
   }
 
@@ -68,16 +86,6 @@ const createCityView = async (): Promise<SelectedCityView> => {
   const update = () => {
     title.text = selectedCity.name
   }
-
-  container.on("click", () => {
-    addToPipeline({
-      city: selectedCity.name,
-      ...constructions["City wall"],
-      texture: upgrades.getUpgradeTexture("light"),
-    })
-
-    hide()
-  })
 
   return {
     container,

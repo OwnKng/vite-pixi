@@ -31,11 +31,12 @@ export type Player = {
 export type City = {
   name: string
   population: number
-  buildings: Building[]
   card: EntityUI
   details: View
   summary: View
   needsUIUpdate: boolean
+  upgrades: Upgrade[]
+  upgrade: Upgrade
 }
 
 export type Pipeline = {
