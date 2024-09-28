@@ -1,7 +1,6 @@
 import { Container, Sprite } from "pixi.js"
 import { loadPlayingAssets } from "./loaders/assets"
 import { dims, CITIES } from "./consts"
-import { createCityCard } from "./cards"
 import {
   createCityEntity,
   createPipeline,
@@ -9,6 +8,9 @@ import {
 } from "./entities"
 import { createCityView } from "./views"
 import { createGrid } from "./layout/grid"
+import { createEndTurnButton } from "./layout/endturn"
+import { queries } from "./entities"
+import { announcements } from "./layout/announcements"
 
 const cityView = await createCityView()
 
@@ -45,19 +47,36 @@ function createGameScreen() {
 
     //_ Player
     const player = createPlayerEntity()
+    player.scoreboard.addToWorld(gamescreen)
 
     const pipeline = await createPipeline()
     pipeline.ui.addToWorld(gamescreen, 0, 0)
     pipeline.ui.show()
 
+    //_ Cities
     CITIES.forEach((city) => {
       const cityEntity = createCityEntity(city)
-      const card = createCityCard({ title: cityEntity.name })
+      cityEntity.card.container.on("pointerdown", () => {
+        cityView.setSelectedCity(cityEntity)
+        cityView.show()
+      })
 
-      card.container.on("pointerdown", () => cityView.show(cityEntity))
-
-      cards.addItem(card.container)
+      cards.addItem(cityEntity.card.container)
     })
+
+    //_ Turn button
+    const turnButton = createEndTurnButton()
+    turnButton.container.position.set(16 * 12, 16 * 1)
+    turnButton.addToWorld(gamescreen)
+
+    turnButton.container.on("pointerdown", () => {
+      for (const player of queries.player) {
+        player.readyForNext = true
+      }
+    })
+
+    //_ Announcements
+    announcements.addToWorld(gamescreen)
   }
 
   return {

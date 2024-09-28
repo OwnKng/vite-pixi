@@ -5,13 +5,16 @@ import gsap from "gsap"
 import { constructions } from "../data/buildings"
 import { createUpgrades } from "../layout/upgrades"
 
-type View = {
+type SelectedCityView = {
   container: Container
-  show: (city: City) => void
+  show: () => void
   hide: () => void
+  setSelectedCity: (city: City) => void
 }
 
-const createCityView = async (): Promise<View> => {
+const createCityView = async (): Promise<SelectedCityView> => {
+  let selectedCity: City
+
   const container = new Container()
   container.x = 16
   container.y = 32
@@ -36,8 +39,6 @@ const createCityView = async (): Promise<View> => {
   // Pipeline
   const upgrades = await createUpgrades()
 
-  // Buildings
-
   async function hide() {
     await gsap.to(container, {
       alpha: 0,
@@ -48,8 +49,7 @@ const createCityView = async (): Promise<View> => {
     container.visible = false
   }
 
-  async function show(city: City) {
-    title.text = city.name
+  async function show() {
     container.visible = true
 
     await gsap.to(container, {
@@ -60,18 +60,30 @@ const createCityView = async (): Promise<View> => {
     })
   }
 
+  const setSelectedCity = (city: City) => {
+    selectedCity = city
+    update()
+  }
+
+  const update = () => {
+    title.text = selectedCity.name
+  }
+
   container.on("click", () => {
     addToPipeline({
-      city: "London",
+      city: selectedCity.name,
       ...constructions["City wall"],
-      sprite: upgrades.getUpgradeSprite("light"),
+      texture: upgrades.getUpgradeTexture("light"),
     })
+
+    hide()
   })
 
   return {
     container,
     hide,
     show,
+    setSelectedCity,
   }
 }
 

@@ -1,4 +1,3 @@
-import { Sprite } from "pixi.js"
 import { loadUpgradesAssets } from "../loaders/assets"
 
 export const createUpgrades = async () => {
@@ -9,9 +8,9 @@ export const createUpgrades = async () => {
     light: light.source,
   }
 
-  const getUpgradeSprite = (name: string) => Sprite.from(map[name])
+  const getUpgradeTexture = (name: string) => map[name]
 
   return {
-    getUpgradeSprite,
+    getUpgradeTexture,
   }
 }

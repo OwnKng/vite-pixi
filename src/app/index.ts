@@ -1,7 +1,7 @@
 import { Application, Container, Ticker } from "pixi.js"
 import { dims } from "./consts"
 import { gameScreen } from "./gamescreen"
-import { updatePipelineUi } from "./systems"
+import { updatePipelineUi, turnSystem, scoreboardSystem } from "./systems"
 
 export default function createApplication() {
   const app = new Application()
@@ -23,6 +23,8 @@ export default function createApplication() {
       )
 
       updatePipelineUi()
+      scoreboardSystem()
+      turnSystem()
     }
   })
 

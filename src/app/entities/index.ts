@@ -1,8 +1,9 @@
 import { World } from "miniplex"
-import { Container, Sprite } from "pixi.js"
-import { createCityView } from "../views"
+import { Container, Texture } from "pixi.js"
 import { createPipelineUi } from "../layout/pipeline"
 import { EntityUI } from "../layout/types"
+import { createCityCard } from "../cards"
+import { createScoreboard, Scoreboard } from "../views/scoreboard"
 
 type Building = {
   name: string
@@ -14,26 +15,31 @@ export type Upgrade = {
   level: number
   cost: number
   city: string
-  sprite: Sprite
+  texture: Texture
 }
 
 export type Player = {
   name: string
   money: number
-  health: number
+  population: number
+  soliders: number
+  scoreboard: Scoreboard
+  needsUpdate: boolean
+  readyForNext: boolean
 }
 
 export type City = {
   name: string
   population: number
   buildings: Building[]
+  card: EntityUI
   details: View
   summary: View
+  needsUIUpdate: boolean
 }
 
 export type Pipeline = {
   upgrades: Upgrade[]
-  readyForNext: boolean
   ui: EntityUI
   needsUpdate: boolean
 }
@@ -53,15 +59,27 @@ export const queries = {
   views: world.with("view"),
   pipeline: world.with("upgrades"),
   player: world.with("money"),
+  readyForNext: world.with("readyForNext"),
 }
 
 export const createPlayerEntity = () =>
-  world.add({ name: "Player", money: 1000, health: 100 })
+  world.add({
+    name: "Player",
+    money: 1000,
+    population: 0,
+    soldiers: 0,
+    needsUpdate: false,
+    readyForNext: false,
+    scoreboard: createScoreboard({
+      money: 1000,
+      population: 0,
+      soldiers: 0,
+    }),
+  })
 
 export const createPipeline = async () =>
   world.add({
     upgrades: [],
-    readyForNext: false,
     ui: await createPipelineUi(),
     needsUpdate: false,
   })
@@ -72,9 +90,16 @@ export const addToPipeline = (upgrade: Upgrade) => {
 
   for (const player of queries.player) {
     player.money -= upgrade.cost
+    player.needsUpdate = true
   }
 
   pipeline.needsUpdate = true
+
+  for (const city of queries.cities) {
+    if (city.name === upgrade.city) {
+      city.card.setBuilding()
+    }
+  }
 }
 
 export const removeFromPipeline = (upgrade: Upgrade) => {
@@ -83,6 +108,13 @@ export const removeFromPipeline = (upgrade: Upgrade) => {
 
   for (const player of queries.player) {
     player.money += upgrade.cost
+    player.needsUpdate = true
+  }
+
+  for (const city of queries.cities) {
+    if (city.name === upgrade.city) {
+      city.card.removeBuilding()
+    }
   }
 
   pipeline.needsUpdate = true
@@ -99,15 +131,13 @@ export const createCityEntity = ({
   selected?: boolean
   underConstruction?: Upgrade[]
 }) => {
-  const view = createCityView()
+  const card = createCityCard({ title: name })
 
   return world.add({
     name,
     population,
     buildings,
-    view: {
-      hidden: true,
-      ...view,
-    },
+    card,
+    needsUIUpdate: false,
   })
 }
