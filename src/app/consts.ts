@@ -9,6 +9,27 @@ export const zIndexLevels = {
   high: 2,
 }
 
+export const upgrades = [
+  {
+    name: "house",
+    texture: "light",
+    cost: 100,
+    population: 100,
+    soliders: 0,
+    description:
+      "Houses provide shelter for your citizens. Increasing the number of houses will increase your population and tax base. \n \nCost: 100 \nPopulation: +100",
+  },
+  {
+    name: "barracks",
+    texture: "light",
+    cost: 500,
+    population: 0,
+    soliders: 10,
+    description:
+      "Barracks provide training for your soldiers. Increasing the number of barracks will increase your army size and defense. \n \nCost: 500 \nSoldiers: +10",
+  },
+]
+
 export const CITIES = [
   {
     name: "London",

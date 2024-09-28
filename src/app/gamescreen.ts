@@ -31,16 +31,13 @@ function createGameScreen() {
   gamescreen.addChild(overlay)
 
   async function init() {
-    const { navigation, menu } = await loadPlayingAssets()
-    navigation.source.scaleMode = "nearest"
+    const { menu } = await loadPlayingAssets()
     menu.source.scaleMode = "nearest"
-
-    const navigationSprite = Sprite.from(navigation)
 
     const menuSprite = Sprite.from(menu)
     menuSprite.position.x = dims.width - menuSprite.width
 
-    gamescreen.addChild(navigationSprite, menuSprite)
+    gamescreen.addChild(menuSprite)
 
     //_ Player
     const player = createPlayerEntity()
@@ -68,6 +65,7 @@ function createGameScreen() {
     turnButton.container.on("pointerdown", () => {
       for (const player of queries.player) {
         player.readyForNext = true
+        cards.resetView()
       }
     })
 

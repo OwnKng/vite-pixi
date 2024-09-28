@@ -2,10 +2,14 @@ import { Assets, Texture, Rectangle } from "pixi.js"
 import navigationSrc from "../../assets/navigation.png"
 import menuSrc from "../../assets/menu.png"
 import cardSrc from "../../assets/card.png"
-import selectedSrc from "../../assets/selected.png"
+import selectedSrc from "../../assets/city/selected.png"
+import builderSrc from "../../assets/city/builder.png"
+import itemsSrc from "../../assets/city/items.png"
 import pipelineSrc from "../../assets/pipeline.png"
 import lightSrc from "../../assets/light.png"
+import buildButtonSrc from "../../assets/city/buildButton.png"
 import type { TextureSource } from "pixi.js"
+import pixelifySans from "../../assets/fonts/pixelify-sans.woff2"
 
 Assets.init({
   manifest: {
@@ -33,11 +37,23 @@ Assets.init({
         ],
       },
       {
-        name: "overlays",
+        name: "city",
         assets: [
           {
-            alias: "selected",
+            alias: "selectedTexture",
             src: selectedSrc,
+          },
+          {
+            alias: "upgradesTexture",
+            src: builderSrc,
+          },
+          {
+            alias: "itemsTextures",
+            src: itemsSrc,
+          },
+          {
+            alias: "buildButtonTexture",
+            src: buildButtonSrc,
           },
         ],
       },
@@ -64,6 +80,8 @@ Assets.init({
 })
 
 export const loadPlayingAssets = async () => await Assets.loadBundle("playing")
+
+export const loadCityAssets = async () => await Assets.loadBundle("city")
 
 export const loadPipelineAssets = async () =>
   await Assets.loadBundle("pipeline")
@@ -93,7 +111,7 @@ export function createTileset(asset: TextureSource, w: number, h: number) {
 const { cards } = await Assets.loadBundle("cards")
 const cardTextures = createTileset(cards, 64, 80)
 
-const { selected } = await Assets.loadBundle("overlays")
-selected.source.scaleMode = "nearest"
+const f = await Assets.load(pixelifySans)
+console.log(f)
 
-export { cardTextures, selected }
+export { cardTextures }

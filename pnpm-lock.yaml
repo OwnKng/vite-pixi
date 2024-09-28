@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@fontsource-variable/pixelify-sans':
+    specifier: ^5.1.0
+    version: 5.1.0
   '@pixi/ui':
     specifier: ^2.1.5
     version: 2.1.5(pixi.js@8.4.0)
@@ -248,6 +251,10 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@fontsource-variable/pixelify-sans@5.1.0:
+    resolution: {integrity: sha512-NBt2JLCcJCbx+gv4VgZ4VvukHPSTF1i4Pd7zG/rc5GWCYKSJ5G+FqVAKhLeeLdrtwZZoANcX/r08X+s7Q1iOzQ==}
+    dev: false
 
   /@hmans/id@0.0.1:
     resolution: {integrity: sha512-2BxHxZziST8F0P5Dt+UuttF2lwCaKK7QFR814PwEp708l6dm86pjWJAFr7BKyAGu27mRpYcghvCAUAucNdsCdw==}

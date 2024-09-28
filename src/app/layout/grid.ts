@@ -87,5 +87,9 @@ export const createGrid = ({
   return {
     container,
     addItem,
+    resetView: () => {
+      index = 0
+      scrollTo(index)
+    },
   }
 }

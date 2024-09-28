@@ -1,5 +1,6 @@
-import { Sprite, Container, Text } from "pixi.js"
+import { Sprite, Container, Text, TextStyle } from "pixi.js"
 import { cardTextures } from "./loaders/assets"
+import { lightTextStyles } from "./views/utils"
 
 const [cardTexture, cardHoveredTexture] = cardTextures
 
@@ -40,10 +41,10 @@ export const createCityCard = ({ title }: CardProps): Card => {
 
   const text = new Text({
     text: title,
-    style: {
+    style: new TextStyle({
+      ...lightTextStyles,
       fontSize: 48,
-      fill: 0xfffffe,
-    },
+    }),
   })
 
   text.x = 2

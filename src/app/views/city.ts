@@ -1,10 +1,11 @@
-import { Sprite, Container, Text, Graphics } from "pixi.js"
-import { selected } from "../loaders/assets"
+import { Sprite, Container, Text, TextStyle } from "pixi.js"
 import { addToPipeline, City } from "../entities"
-import { constructions } from "../data/buildings"
 import { createUpgrades } from "../layout/upgrades"
 import gsap from "gsap"
-import { dims } from "../consts"
+import { backgroundRect, lightTextStyles } from "./utils"
+import { loadCityAssets } from "../loaders/assets"
+import { createUpgradeManager } from "./builder"
+import { upgrades } from "../consts"
 
 export type CityView = {
   container: Container
@@ -14,79 +15,83 @@ export type CityView = {
 }
 
 const createCityView = async (city: City): Promise<CityView> => {
-  const cityViewContainer = new Container()
-  cityViewContainer.x = 0
-  cityViewContainer.y = 0
-  cityViewContainer.visible = false
+  const container = new Container()
+  container.x = 0
+  container.y = 0
+  container.visible = false
 
   const background = new Container()
-  const backgroundFill = new Graphics()
-    .rect(0, 0, dims.width, dims.height)
-    .fill(0x000000)
-  backgroundFill.alpha = 0.5
-  background.addChild(backgroundFill)
+  background.addChild(backgroundRect.clone())
+  background.alpha = 0.5
 
   background.eventMode = "static"
   background.on("pointerdown", () => city.view.hide())
 
-  cityViewContainer.addChild(background)
+  const cityViewContainer = new Container()
+  cityViewContainer.x = 16
+  cityViewContainer.y = 32
 
-  const container = new Container()
-  container.x = 16
-  container.y = 32
-  const sprite = Sprite.from(selected)
-  container.addChild(sprite)
+  const { selectedTexture, upgradesTexture } = await loadCityAssets()
+  selectedTexture.source.scaleMode = "nearest"
+  upgradesTexture.source.scaleMode = "nearest"
 
-  cityViewContainer.addChild(container)
+  const sprite = Sprite.from(selectedTexture)
+  cityViewContainer.addChild(sprite)
+  cityViewContainer.eventMode = "static"
 
-  container.eventMode = "static"
+  container.addChild(background)
+  container.addChild(cityViewContainer)
 
   // Title
   const title = new Text({
     text: city.name,
-    style: { fontSize: 48, fill: 0xfffffe },
+    style: new TextStyle({
+      ...lightTextStyles,
+      fontSize: 48,
+    }),
   })
-  title.x = 2
-  title.y = 2
+
+  title.anchor.set(0, 0.5)
+  title.x = 4
+  title.y = 8
   title.scale = 0.125
 
-  container.addChild(title)
-
-  //_ Pipeline
-  const upgrades = await createUpgrades()
+  cityViewContainer.addChild(title)
 
   //_ Upgrades
-  const soliderButton = Sprite.from(upgrades.getUpgradeTexture("light"))
-  soliderButton.position.x = 16
-  soliderButton.position.y = 64
+  const upgradeTextures = await createUpgrades()
 
-  soliderButton.eventMode = "static"
+  const builder = await createUpgradeManager((upgrade) =>
+    addToPipeline(upgrade)
+  )
 
-  soliderButton.on("pointerdown", () => {
-    addToPipeline({
-      city: city.name,
-      ...constructions["City wall"],
-      texture: upgrades.getUpgradeTexture("light"),
-    })
-  })
+  builder.container.x = 96
+  builder.container.y = 16
+  cityViewContainer.addChild(builder.container)
 
-  container.addChild(soliderButton)
+  const startingUpgrades = upgrades.map((u) => ({
+    ...u,
+    city: city.name,
+    texture: upgradeTextures.getUpgradeTexture(u.texture),
+  }))
+
+  builder.addUpgrades(startingUpgrades)
 
   async function hide() {
-    await gsap.to(container, {
+    await gsap.to(cityViewContainer, {
       alpha: 0,
       y: 64,
       duration: 0.125,
       ease: "power2.in",
     })
 
-    cityViewContainer.visible = false
+    container.visible = false
   }
 
   async function show() {
-    cityViewContainer.visible = true
+    container.visible = true
 
-    await gsap.to(container, {
+    await gsap.to(cityViewContainer, {
       alpha: 1,
       y: 32,
       duration: 0.125,
@@ -95,7 +100,7 @@ const createCityView = async (city: City): Promise<CityView> => {
   }
 
   return {
-    container: cityViewContainer,
+    container,
     title,
     hide,
     show,

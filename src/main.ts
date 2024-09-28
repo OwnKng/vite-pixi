@@ -1,6 +1,7 @@
 import "./style.css"
 import createApplication from "./app/index.ts"
 import { dims } from "./app/consts.ts"
+import "@fontsource-variable/pixelify-sans"
 
 const container = document.querySelector<HTMLDivElement>("#app")!
 const gamewindow = document.getElementById("gamewindow")!

@@ -7,17 +7,14 @@ import { createScoreboard, Scoreboard } from "../views/scoreboard"
 import type { CityView } from "../views/city"
 import { createCityView } from "../views/city"
 
-type Building = {
-  name: string
-  level: number
-}
-
 export type Upgrade = {
   name: string
-  level: number
   cost: number
   city: string
   texture: Texture
+  population?: number
+  soldiers?: number
+  description: string
 }
 
 export type Player = {
@@ -36,7 +33,6 @@ export type City = {
   card: EntityUI
   view: CityView
   needsUIUpdate: boolean
-  upgrades: Upgrade[]
   upgrade: Upgrade
 }
 
@@ -125,11 +121,9 @@ export const removeFromPipeline = (upgrade: Upgrade) => {
 export const createCityEntity = async ({
   name,
   population,
-  buildings = [],
 }: {
   name: string
   population: number
-  buildings?: Building[]
   selected?: boolean
   underConstruction?: Upgrade[]
 }) => {
@@ -138,7 +132,6 @@ export const createCityEntity = async ({
   const cityEntity = world.add({
     name,
     population,
-    buildings,
     card,
     needsUIUpdate: false,
   })
