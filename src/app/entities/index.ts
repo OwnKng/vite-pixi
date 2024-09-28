@@ -4,6 +4,8 @@ import { createPipelineUi } from "../layout/pipeline"
 import { EntityUI } from "../layout/types"
 import { createCityCard } from "../cards"
 import { createScoreboard, Scoreboard } from "../views/scoreboard"
+import type { CityView } from "../views/city"
+import { createCityView } from "../views/city"
 
 type Building = {
   name: string
@@ -32,8 +34,7 @@ export type City = {
   name: string
   population: number
   card: EntityUI
-  details: View
-  summary: View
+  view: CityView
   needsUIUpdate: boolean
   upgrades: Upgrade[]
   upgrade: Upgrade
@@ -121,7 +122,7 @@ export const removeFromPipeline = (upgrade: Upgrade) => {
   pipeline.needsUpdate = true
 }
 
-export const createCityEntity = ({
+export const createCityEntity = async ({
   name,
   population,
   buildings = [],
@@ -134,11 +135,17 @@ export const createCityEntity = ({
 }) => {
   const card = createCityCard({ title: name })
 
-  return world.add({
+  const cityEntity = world.add({
     name,
     population,
     buildings,
     card,
     needsUIUpdate: false,
   })
+
+  const view = await createCityView(cityEntity)
+
+  cityEntity.view = view
+
+  return cityEntity
 }

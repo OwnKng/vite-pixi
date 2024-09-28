@@ -3,6 +3,12 @@ export const dims = {
   height: 180,
 }
 
+export const zIndexLevels = {
+  low: 0,
+  medium: 1,
+  high: 2,
+}
+
 export const CITIES = [
   {
     name: "London",
