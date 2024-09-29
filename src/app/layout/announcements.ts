@@ -1,5 +1,5 @@
 import { Container, Text, TextStyle } from "pixi.js"
-import { lightTextStyles } from "../views/utils"
+import { lightTextStyles } from "./utils"
 import { dims } from "../consts"
 import { Graphics } from "pixi.js"
 import gsap from "gsap"

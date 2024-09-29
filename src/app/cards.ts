@@ -1,6 +1,6 @@
 import { Sprite, Container, Text, TextStyle } from "pixi.js"
 import { cardTextures } from "./loaders/assets"
-import { lightTextStyles } from "./views/utils"
+import { lightTextStyles } from "./layout/utils"
 
 const [cardTexture, cardHoveredTexture] = cardTextures
 

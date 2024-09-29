@@ -1,17 +1,18 @@
-import { Container, Sprite } from "pixi.js"
-import { loadPlayingAssets } from "./loaders/assets"
-import { dims, CITIES, zIndexLevels } from "./consts"
+import { Container, Sprite, Ticker } from "pixi.js"
+import { loadCoreAssets, loadPlayingAssets } from "../loaders/assets"
+import { dims, CITIES, zIndexLevels } from "../consts"
 import {
   createCityEntity,
   createPipeline,
   createPlayerEntity,
-} from "./entities"
-import { createGrid } from "./layout/grid"
-import { createEndTurnButton } from "./layout/endturn"
-import { queries } from "./entities"
-import { announcements } from "./layout/announcements"
+} from "../entities"
+import { createGrid } from "../layout/grid"
+import { queries } from "../entities"
+import { announcements } from "../layout/announcements"
+import { updatePipelineUi, turnSystem, scoreboardSystem } from "../systems"
+import { createButton } from "../layout/button"
 
-function createGameScreen() {
+export function createGameScreen() {
   let gamescreen = new Container()
   gamescreen.zIndex = zIndexLevels.low
 
@@ -58,25 +59,37 @@ function createGameScreen() {
     })
 
     //_ Turn button
-    const turnButton = createEndTurnButton()
-    turnButton.container.position.set(16 * 12, 16 * 1)
-    turnButton.addToWorld(gamescreen)
+    const { buttonTexture } = await loadCoreAssets()
 
-    turnButton.container.on("pointerdown", () => {
-      for (const player of queries.player) {
-        player.readyForNext = true
-        cards.resetView()
-      }
+    const turnButton = createButton({
+      buttonText: "End Turn",
+      texture: buttonTexture,
+      hoverTexture: buttonTexture,
+      onclick: () => {
+        turnButton.on("pointerdown", () => {
+          for (const player of queries.player) {
+            player.readyForNext = true
+            cards.resetView()
+          }
+        })
+      },
     })
+
+    turnButton.position.set(16 * 12, 16 * 1)
+    gamescreen.addChild(turnButton)
 
     //_ Announcements
     announcements.addToWorld(gamescreen)
   }
+
+  Ticker.shared.add((time) => {
+    updatePipelineUi()
+    scoreboardSystem()
+    turnSystem()
+  })
 
   return {
     init,
     container: gamescreen,
   }
 }
-
-export const gameScreen = createGameScreen()

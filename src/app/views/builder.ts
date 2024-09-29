@@ -2,7 +2,7 @@ import { createTileset, loadCityAssets } from "../loaders/assets"
 import { Container, Sprite, Text, TextStyle } from "pixi.js"
 import { ScrollBox } from "@pixi/ui"
 import { Upgrade } from "../entities"
-import { darkTextStyles, lightTextStyles } from "./utils"
+import { darkTextStyles, lightTextStyles } from "../layout/utils"
 
 export const createUpgradeManager = async (
   onclick: (upgrade: Upgrade) => void
@@ -11,7 +11,7 @@ export const createUpgradeManager = async (
 
   const upgradesScrollbox = new ScrollBox({
     width: 96,
-    height: 96,
+    height: 94,
     elementsMargin: 2,
     vertPadding: 2,
     globalScroll: false,
@@ -26,6 +26,17 @@ export const createUpgradeManager = async (
 
   container.addChild(upgradesMenu)
   container.addChild(upgradesScrollbox)
+
+  const title = new Text({
+    text: "Select upgrade",
+    style: new TextStyle({ ...lightTextStyles }),
+  })
+
+  title.scale = 0.05
+  title.x = 2
+  title.y = 14 - title.height
+
+  container.addChild(title)
 
   let selected: Upgrade
 

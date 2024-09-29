@@ -1,4 +1,4 @@
-import { Graphics, TextStyle } from "pixi.js"
+import { Graphics } from "pixi.js"
 import { dims } from "../consts"
 
 const backgroundRect = new Graphics()

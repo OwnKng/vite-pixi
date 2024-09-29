@@ -28,6 +28,42 @@ export const upgrades = [
     description:
       "Barracks provide training for your soldiers. Increasing the number of barracks will increase your army size and defense. \n \nCost: 500 \nSoldiers: +10",
   },
+  {
+    name: "barracks",
+    texture: "light",
+    cost: 500,
+    population: 0,
+    soliders: 10,
+    description:
+      "Barracks provide training for your soldiers. Increasing the number of barracks will increase your army size and defense. \n \nCost: 500 \nSoldiers: +10",
+  },
+  {
+    name: "barracks",
+    texture: "light",
+    cost: 500,
+    population: 0,
+    soliders: 10,
+    description:
+      "Barracks provide training for your soldiers. Increasing the number of barracks will increase your army size and defense. \n \nCost: 500 \nSoldiers: +10",
+  },
+  {
+    name: "barracks",
+    texture: "light",
+    cost: 500,
+    population: 0,
+    soliders: 10,
+    description:
+      "Barracks provide training for your soldiers. Increasing the number of barracks will increase your army size and defense. \n \nCost: 500 \nSoldiers: +10",
+  },
+  {
+    name: "barracks",
+    texture: "light",
+    cost: 500,
+    population: 0,
+    soliders: 10,
+    description:
+      "Barracks provide training for your soldiers. Increasing the number of barracks will increase your army size and defense. \n \nCost: 500 \nSoldiers: +10",
+  },
 ]
 
 export const CITIES = [

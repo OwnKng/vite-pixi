@@ -39,15 +39,17 @@ function resizeGameWindow() {
 async function main() {
   const pixi = createApplication()
 
-  const { app, setPlay } = pixi
+  const { app, loadCoreAssets, startGame } = pixi
 
   await app.init({
     resizeTo: gamewindow,
     backgroundColor: 0x10141f,
   })
 
+  await loadCoreAssets()
   gamewindow.appendChild(app.canvas)
-  await setPlay()
+
+  await startGame()
 }
 
 resizeGameWindow()

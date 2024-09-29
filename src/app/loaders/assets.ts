@@ -10,10 +10,29 @@ import lightSrc from "../../assets/light.png"
 import buildButtonSrc from "../../assets/city/buildButton.png"
 import type { TextureSource } from "pixi.js"
 import pixelifySans from "../../assets/fonts/pixelify-sans.woff2"
+import closeButtonSrc from "../../assets/ui/closeButton.png"
+import windowLargeSrc from "../../assets/ui/windowLarge.png"
 
 Assets.init({
   manifest: {
     bundles: [
+      {
+        name: "core",
+        assets: [
+          {
+            alias: "buttonTexture",
+            src: buildButtonSrc,
+          },
+          {
+            alias: "closeButtonTexture",
+            src: closeButtonSrc,
+          },
+          {
+            alias: "windowLarge",
+            src: windowLargeSrc,
+          },
+        ],
+      },
       {
         name: "playing",
         assets: [
@@ -79,6 +98,8 @@ Assets.init({
   },
 })
 
+export const loadCoreAssets = async () => await Assets.loadBundle("core")
+
 export const loadPlayingAssets = async () => await Assets.loadBundle("playing")
 
 export const loadCityAssets = async () => await Assets.loadBundle("city")
@@ -111,7 +132,8 @@ export function createTileset(asset: TextureSource, w: number, h: number) {
 const { cards } = await Assets.loadBundle("cards")
 const cardTextures = createTileset(cards, 64, 80)
 
-const f = await Assets.load(pixelifySans)
-console.log(f)
+export async function loadFonts() {
+  await Assets.load(pixelifySans)
+}
 
 export { cardTextures }
