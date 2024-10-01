@@ -17,6 +17,17 @@ export type Upgrade = {
   description: string
 }
 
+export type Mission = {
+  name: string
+  description: string
+  reward: number
+  completed: boolean
+  initialValue: number
+  currentValue: number
+  readyForNext: boolean
+  acknowledged: boolean
+}
+
 export type Player = {
   name: string
   money: number
@@ -53,11 +64,12 @@ export type View = {
 export const world = new World()
 
 export const queries = {
-  cities: world.with("name"),
+  cities: world.with("name", "population"),
   views: world.with("view"),
   pipeline: world.with("upgrades"),
   player: world.with("money"),
   readyForNext: world.with("readyForNext"),
+  missions: world.with("reward"),
 }
 
 export const createPlayerEntity = () =>
@@ -142,3 +154,20 @@ export const createCityEntity = async ({
 
   return cityEntity
 }
+
+export const createMission = async (
+  name: string,
+  description: string,
+  reward: number
+) =>
+  await world.add({
+    name,
+    description,
+    reward,
+    completed: false,
+    initialValue: 0,
+    currentValue: 0,
+    readyForNext: true,
+    acknowledged: false,
+    active: false,
+  })

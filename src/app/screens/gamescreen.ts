@@ -11,34 +11,49 @@ import { queries } from "../entities"
 import { announcements } from "../layout/announcements"
 import { updatePipelineUi, turnSystem, scoreboardSystem } from "../systems"
 import { createButton } from "../layout/button"
+import { createSidebar } from "../layout/sidebar"
 
 export function createGameScreen() {
   let gamescreen = new Container()
   gamescreen.zIndex = zIndexLevels.low
-
-  const cards = createGrid({
-    width: 320,
-    height: 96,
-    gap: 8,
-    scrollOffset: 8,
-  })
-
-  cards.container.position.y = 80
-
-  gamescreen.addChild(cards.container)
 
   const overlay = new Container()
   overlay.zIndex = zIndexLevels.high
   gamescreen.addChild(overlay)
 
   async function init() {
-    const { menu } = await loadPlayingAssets()
-    menu.source.scaleMode = "nearest"
+    // Cards
+    const cards = await createGrid({
+      width: 304,
+      height: 80,
+      gap: 4,
+      scrollOffset: 0,
+    })
 
-    const menuSprite = Sprite.from(menu)
-    menuSprite.position.x = dims.width - menuSprite.width
+    cards.container.position.y = 96
+    cards.container.position.x = 8
+    gamescreen.addChild(cards.container)
 
-    gamescreen.addChild(menuSprite)
+    //_ Sidebar
+    const { container, buttons } = await createSidebar()
+    container.position.set(dims.width - 24, 8)
+
+    const [
+      menuButton,
+      analysisButton,
+      notificationButton,
+      mapButton,
+      turnButton,
+    ] = buttons
+
+    gamescreen.addChild(container)
+
+    turnButton.on("click", () => {
+      for (const player of queries.player) {
+        player.readyForNext = true
+        cards.resetView()
+      }
+    })
 
     //_ Player
     const player = createPlayerEntity()
@@ -58,34 +73,14 @@ export function createGameScreen() {
       overlay.addChild(cityEntity.view.container)
     })
 
-    //_ Turn button
-    const { buttonTexture } = await loadCoreAssets()
-
-    const turnButton = createButton({
-      buttonText: "End Turn",
-      texture: buttonTexture,
-      hoverTexture: buttonTexture,
-      onclick: () => {
-        turnButton.on("pointerdown", () => {
-          for (const player of queries.player) {
-            player.readyForNext = true
-            cards.resetView()
-          }
-        })
-      },
-    })
-
-    turnButton.position.set(16 * 12, 16 * 1)
-    gamescreen.addChild(turnButton)
-
     //_ Announcements
     announcements.addToWorld(gamescreen)
   }
 
-  Ticker.shared.add((time) => {
+  Ticker.shared.add(() => {
     updatePipelineUi()
     scoreboardSystem()
-    turnSystem()
+    turnSystem(overlay)
   })
 
   return {

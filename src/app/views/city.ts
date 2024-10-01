@@ -1,11 +1,11 @@
-import {  Container } from "pixi.js"
+import { Container } from "pixi.js"
 import { addToPipeline, City } from "../entities"
 import { createUpgrades } from "../layout/upgrades"
 import gsap from "gsap"
 import { loadCityAssets } from "../loaders/assets"
 import { createUpgradeManager } from "./builder"
 import { upgrades } from "../consts"
-import { createLargeWindow } from "../layout/window"
+import { createWindow } from "../layout/window"
 
 export type CityView = {
   container: Container
@@ -14,7 +14,7 @@ export type CityView = {
 }
 
 const createCityView = async (city: City): Promise<CityView> => {
-  const w = await createLargeWindow({ title: city.name, close: hide })
+  const w = await createWindow({ title: city.name, close: hide, size: "large" })
   w.container.visible = false
 
   const { upgradesTexture } = await loadCityAssets()

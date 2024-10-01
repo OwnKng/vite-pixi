@@ -1,4 +1,4 @@
-import { lightTextStyles } from "./utils"
+import { darkTextStyles } from "./utils"
 import { Container, Sprite, Text, TextStyle, Texture } from "pixi.js"
 
 export const createButton = ({
@@ -6,11 +6,13 @@ export const createButton = ({
   onclick,
   texture,
   hoverTexture,
+  fontScale = 0.1,
 }: {
   buttonText: string
   onclick: (props: any) => void
   texture: Texture
   hoverTexture: Texture
+  fontScale?: number
 }) => {
   const container = new Container()
   const buttonSprite = Sprite.from(texture)
@@ -18,12 +20,12 @@ export const createButton = ({
   const text = new Text({
     text: buttonText,
     style: new TextStyle({
-      ...lightTextStyles,
+      ...darkTextStyles,
       textBaseline: "middle",
     }),
   })
 
-  text.scale.set(0.1)
+  text.scale.set(fontScale)
   text.x = buttonSprite.width * 0.5 - text.width * 0.5
   text.y = buttonSprite.height * 0.5 - text.height * 0.5
 

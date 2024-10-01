@@ -29,12 +29,12 @@ const createAnnouncement = () => {
 
   container.addChild(text)
 
-  const addNotification = (notification: string) => {
+  const addNotification = async (notification: string) => {
     notifications.push(notification)
     text.text = notification
     text.x = dims.width * 0.5 - text.width / 2
 
-    show()
+    await show()
   }
 
   const show = async () => {

@@ -2,7 +2,6 @@ import { Assets, Texture, Rectangle } from "pixi.js"
 import navigationSrc from "../../assets/navigation.png"
 import menuSrc from "../../assets/menu.png"
 import cardSrc from "../../assets/card.png"
-import selectedSrc from "../../assets/city/selected.png"
 import builderSrc from "../../assets/city/builder.png"
 import itemsSrc from "../../assets/city/items.png"
 import pipelineSrc from "../../assets/pipeline.png"
@@ -12,6 +11,9 @@ import type { TextureSource } from "pixi.js"
 import pixelifySans from "../../assets/fonts/pixelify-sans.woff2"
 import closeButtonSrc from "../../assets/ui/closeButton.png"
 import windowLargeSrc from "../../assets/ui/windowLarge.png"
+import arrowsSrc from "../../assets/ui/arrows.png"
+import windowSmallSrc from "../../assets/ui/windowSmall.png"
+import buttonsSmallSrc from "../../assets/ui/buttons-small.png"
 
 Assets.init({
   manifest: {
@@ -30,6 +32,18 @@ Assets.init({
           {
             alias: "windowLarge",
             src: windowLargeSrc,
+          },
+          {
+            alias: "windowSmall",
+            src: windowSmallSrc,
+          },
+          {
+            alias: "arrowsTexture",
+            src: arrowsSrc,
+          },
+          {
+            alias: "buttonsSmall",
+            src: buttonsSmallSrc,
           },
         ],
       },
@@ -58,10 +72,6 @@ Assets.init({
       {
         name: "city",
         assets: [
-          {
-            alias: "selectedTexture",
-            src: selectedSrc,
-          },
           {
             alias: "upgradesTexture",
             src: builderSrc,

@@ -1,9 +1,11 @@
 import { Sprite, Container, Graphics } from "pixi.js"
 import gsap from "gsap"
+import { createTileset, loadCoreAssets } from "../loaders/assets"
+import { createButton } from "./button"
 
-export const createGrid = ({
-  width = 320,
-  height = 96,
+export const createGrid = async ({
+  width = 304,
+  height = 80,
   gap = 8,
   scrollOffset = 0,
 }: {
@@ -18,19 +20,19 @@ export const createGrid = ({
   itemsContainer.x = scrollOffset
 
   const mask = new Graphics()
-    .roundRect(0, 0, width - scrollOffset * 2, height, 4)
+    .roundRect(0, 0, width - scrollOffset * 2, height, 2)
     .fill(0xffffff)
 
   itemsContainer.addChild(mask)
   itemsContainer.mask = mask
 
+  container.addChild(
+    new Graphics().roundRect(0, 0, width, height, 2).fill(0x000000)
+  )
+
   let index = 0
   let xOffset = scrollOffset
   let items: any[] = []
-
-  // Left trigger
-  const leftTrigger = new Graphics().rect(4, 0, 16, 16).fill(0xffffff)
-  leftTrigger.eventMode = "static"
 
   const moveForward = () => {
     if (index === items.length - 1) return
@@ -60,26 +62,45 @@ export const createGrid = ({
     })
   }
 
-  leftTrigger.on("click", () => moveBackward())
-  container.addChild(leftTrigger)
+  //_ Button UIs
+  const { arrowsTexture } = await loadCoreAssets()
+  arrowsTexture.source.scaleMode = "nearest"
 
-  // Right trigger
-  const rightTrigger = new Graphics()
-    .rect(320 - 16 - 4, 0, 16, 16)
-    .fill(0xffffff)
+  const [right, rightSelected, left, leftSelected] = createTileset(
+    arrowsTexture,
+    16,
+    16
+  )
 
-  rightTrigger.eventMode = "static"
-  rightTrigger.on("click", () => moveForward())
+  const leftTrigger = createButton({
+    buttonText: "",
+    texture: left.texture,
+    hoverTexture: leftSelected.texture,
+    onclick: moveBackward,
+  })
 
-  container.addChild(rightTrigger)
+  leftTrigger.x = 0
+  leftTrigger.y = height * 0.5 - leftTrigger.height * 0.5
+
+  const rightTrigger = createButton({
+    buttonText: "",
+    texture: right.texture,
+    hoverTexture: rightSelected.texture,
+    onclick: moveForward,
+  })
+
+  rightTrigger.x = width - rightTrigger.width
+  rightTrigger.y = height * 0.5 - rightTrigger.height * 0.5
+
   container.addChild(itemsContainer)
+  container.addChild(rightTrigger)
+  container.addChild(leftTrigger)
 
   const addItem = (item: Container | Sprite) => {
     const x = items.reduce((acc, item) => acc + item.width + gap, 0)
     items.push(item)
 
-    item.x = x
-    item.y = 16
+    item.x = x + gap * 0.5
 
     itemsContainer.addChild(item)
   }

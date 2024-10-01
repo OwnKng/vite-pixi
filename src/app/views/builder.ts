@@ -3,6 +3,7 @@ import { Container, Sprite, Text, TextStyle } from "pixi.js"
 import { ScrollBox } from "@pixi/ui"
 import { Upgrade } from "../entities"
 import { darkTextStyles, lightTextStyles } from "../layout/utils"
+import { createButton } from "../layout/button"
 
 export const createUpgradeManager = async (
   onclick: (upgrade: Upgrade) => void
@@ -142,31 +143,15 @@ const createSelectedUpgrade = async (
 
   container.addChild(description)
 
-  const button = new Container()
-  button.cursor = "pointer"
-  button.eventMode = "static"
-  button.on("pointerdown", () => onClick(upgrade))
-
-  const buildButton = Sprite.from(buildButtonTexture)
-
-  button.addChild(buildButton)
-
-  button.y = 64
-
-  const buttonText = new Text({
-    text: "Add to pipeline",
-    style: new TextStyle({
-      ...darkTextStyles,
-      fontSize: 48,
-      textBaseline: "bottom",
-      dropShadow: false,
-    }),
+  const button = createButton({
+    buttonText: "Add to pipeline",
+    texture: buildButtonTexture,
+    hoverTexture: buildButtonTexture,
+    onclick: () => onClick(upgrade),
+    fontScale: 0.05,
   })
 
-  buttonText.x = 4
-  buttonText.y = 5
-  buttonText.scale = 0.1
-  button.addChild(buttonText)
+  button.y = 64
 
   container.addChild(button)
 

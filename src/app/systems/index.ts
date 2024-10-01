@@ -1,8 +1,9 @@
 import { queries, removeFromPipeline } from "../entities"
-import { Sprite } from "pixi.js"
+import { Container, Sprite } from "pixi.js"
 import { announcements } from "../layout/announcements"
+import { createMissionCard } from "../views/mission"
 
-export const turnSystem = () => {
+export const turnSystem = async (gamescreen: Container) => {
   const readies = []
   for (const ready of queries.readyForNext) {
     readies.push(ready.readyForNext)
@@ -12,11 +13,13 @@ export const turnSystem = () => {
     buildPipelineSystem()
     updateScores()
     announcements.addNotification("Next turn")
-  }
 
-  for (const player of queries.player) {
-    player.readyForNext = false
-    player.needsUpdate = true
+    for (const player of queries.player) {
+      player.readyForNext = false
+      player.needsUpdate = true
+    }
+
+    await newMissionSystem(gamescreen)
   }
 }
 
@@ -82,5 +85,27 @@ export const updatePipelineUi = () => {
     })
 
     pipeline.needsUpdate = false
+  }
+}
+
+export const newMissionSystem = async (gamescreen: Container) => {
+  for (const mission of queries.missions) {
+    if (mission.acknowledged === true) continue
+
+    // Lock the game until acknowledged
+    mission.readyForNext = false
+
+    const missionUi = await createMissionCard({
+      name: mission.name,
+      description: mission.description,
+      reward: mission.reward,
+      close: () => {
+        mission.acknowledged = true
+        mission.readyForNext = true
+        mission.active = true
+      },
+    })
+
+    missionUi.addToWorld(gamescreen)
   }
 }

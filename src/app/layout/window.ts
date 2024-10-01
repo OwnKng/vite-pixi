@@ -2,13 +2,52 @@ import { Container, Sprite, TextStyle, Text } from "pixi.js"
 import { backgroundRect, lightTextStyles } from "./utils"
 import { createTileset, loadCoreAssets } from "../loaders/assets"
 import { createButton } from "./button"
+import { Texture } from "pixi.js"
+import { dims } from "../consts"
+
+export type WindowUi = {
+  container: Container
+  windowContainer: Container
+  contentArea: Container
+}
 
 type WindowProps = {
   title: string
   close: (props: any) => void
 }
 
-export const createLargeWindow = async ({ title, close }: WindowProps) => {
+interface CreateWindowArgs extends WindowProps {
+  size: "small" | "large"
+}
+
+interface GenericWindowProps extends WindowProps {
+  texture: Texture
+}
+
+export const createWindow = async ({
+  title,
+  close,
+  size,
+}: CreateWindowArgs): Promise<WindowUi> => {
+  const { windowLarge, windowSmall } = await loadCoreAssets()
+  windowLarge.source.scaleMode = "nearest"
+  windowSmall.source.scaleMode = "nearest"
+
+  const map = {
+    large: async ({ title, close }: WindowProps) =>
+      await createWindowContainer({ title, close, texture: windowLarge }),
+    small: async ({ title, close }: WindowProps) =>
+      await createWindowContainer({ title, close, texture: windowSmall }),
+  }
+
+  return await map[size]({ title, close })
+}
+
+const createWindowContainer = async ({
+  texture,
+  title,
+  close,
+}: GenericWindowProps): Promise<WindowUi> => {
   const container = new Container()
   container.x = 0
   container.y = 0
@@ -23,17 +62,15 @@ export const createLargeWindow = async ({ title, close }: WindowProps) => {
 
   // Window container
   const windowContainer = new Container()
-  windowContainer.x = 16
-  windowContainer.y = 32
+
   windowContainer.eventMode = "static"
   container.addChild(windowContainer)
 
-  const { windowLarge, closeButtonTexture } = await loadCoreAssets()
-  windowLarge.source.scaleMode = "nearest"
-  closeButtonTexture.source.scaleMode = "nearest"
-
-  const sprite = Sprite.from(windowLarge)
+  const sprite = Sprite.from(texture)
   windowContainer.addChild(sprite)
+
+  windowContainer.x = dims.width / 2 - windowContainer.width / 2
+  windowContainer.y = 32
 
   //_ Text
   const text = new Text({
@@ -51,6 +88,9 @@ export const createLargeWindow = async ({ title, close }: WindowProps) => {
   windowContainer.addChild(text)
 
   //_ Close button
+  const { closeButtonTexture } = await loadCoreAssets()
+  closeButtonTexture.source.scaleMode = "nearest"
+
   const [closeTexture, closeHoveredTexture] = createTileset(
     closeButtonTexture,
     14,
@@ -75,7 +115,7 @@ export const createLargeWindow = async ({ title, close }: WindowProps) => {
   windowContainer.addChild(contentArea)
 
   return {
-    container,
+    container: container,
     windowContainer: windowContainer,
     contentArea,
   }

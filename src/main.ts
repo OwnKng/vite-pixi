@@ -21,7 +21,7 @@ const desiredAspectRatio = dims.width / dims.height
 
 function resizeGameWindow() {
   const containerWidth = container.clientWidth
-  const containerHeight = container.clientHeight - 32
+  const containerHeight = container.clientHeight
 
   const containerAspectRatio = containerWidth / containerHeight
 
@@ -43,7 +43,7 @@ async function main() {
 
   await app.init({
     resizeTo: gamewindow,
-    backgroundColor: 0x10141f,
+    backgroundColor: 0x151d28,
   })
 
   await loadCoreAssets()
