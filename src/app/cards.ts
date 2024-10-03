@@ -1,8 +1,6 @@
 import { Sprite, Container, Text, TextStyle } from "pixi.js"
-import { cardTextures } from "./loaders/assets"
 import { lightTextStyles } from "./layout/utils"
-
-const [cardTexture, cardHoveredTexture] = cardTextures
+import { createTileset, loadCoreAssets } from "./loaders/assets"
 
 type CardProps = {
   title: string
@@ -15,7 +13,9 @@ type Card = {
   removeBuilding: () => void
 }
 
-export const createCityCard = ({ title }: CardProps): Card => {
+export const createCityCard = async ({ title }: CardProps): Promise<Card> => {
+  const { cardTextures } = await loadCoreAssets()
+  const [cardTexture, cardHoveredTexture] = createTileset(cardTextures, 64, 80)
   const sprite = Sprite.from(cardTexture.texture)
 
   const container = new Container()

@@ -65,7 +65,7 @@ export const scoreboardSystem = () => {
 }
 
 export const updatePipelineUi = () => {
-  let offset = 0
+  let index = 0
 
   for (const pipeline of queries.pipeline) {
     if (!pipeline.needsUpdate) continue
@@ -77,8 +77,10 @@ export const updatePipelineUi = () => {
       const sprite = Sprite.from(upgrade.texture)
       sprite.eventMode = "static"
 
-      sprite.x = offset
-      offset += sprite.width
+      // Increment in units of three
+      sprite.x = (index % 3) * 16
+      sprite.y = Math.floor(index / 3) * 16
+      index++
 
       sprite.on("click", () => removeFromPipeline(upgrade))
       ui.container.addChild(sprite)

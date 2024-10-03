@@ -1,38 +1,45 @@
-import { Container, Sprite, Text, TextStyle } from "pixi.js"
+import { Container, Graphics, Sprite, Text, TextStyle } from "pixi.js"
 import { EntityUI } from "./types"
 import { loadPipelineAssets } from "../loaders/assets"
+import { lightTextStyles } from "./utils"
 
 export const createPipelineUi = async (): Promise<EntityUI> => {
   const { pipelineBackground } = await loadPipelineAssets()
 
-  pipelineBackground.source.scaleMode = "nearest"
-  const pipelineSprite = Sprite.from(pipelineBackground)
-  pipelineSprite.y = 16
-
   const container = new Container()
-  container.visible = false
 
-  const textStyles = new TextStyle({
-    fontSize: 48,
-    fill: 0xfffffe,
-    textBaseline: "bottom",
-  })
+  container.visible = false
 
   const title = new Text({
     text: "Pipeline",
-    style: textStyles,
+    style: new TextStyle({
+      ...lightTextStyles,
+      textBaseline: "bottom",
+    }),
   })
 
-  title.y = 8
-  title.scale = 0.125
+  title.anchor.set(0, 1)
+  title.scale = 0.0625
 
   container.addChild(title)
 
-  const constructionContainer = new Container()
-  constructionContainer.y = 16
-  container.addChild(pipelineSprite)
+  const innerContainer = new Container()
+  container.addChild(innerContainer)
 
-  container.addChild(constructionContainer)
+  pipelineBackground.source.scaleMode = "nearest"
+  const pipelineSprite = Sprite.from(pipelineBackground)
+
+  //_ Mask
+  const mask = new Graphics()
+    .rect(0, 0, pipelineSprite.width, pipelineSprite.height)
+    .fill(0x000000)
+
+  innerContainer.mask = mask
+  innerContainer.addChild(mask)
+  innerContainer.addChild(pipelineSprite)
+
+  const constructionContainer = new Container()
+  innerContainer.addChild(constructionContainer)
 
   const show = () => {
     container.visible = true

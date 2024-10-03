@@ -1,5 +1,4 @@
-import { Container, Sprite, Ticker } from "pixi.js"
-import { loadCoreAssets, loadPlayingAssets } from "../loaders/assets"
+import { Container, Ticker } from "pixi.js"
 import { dims, CITIES, zIndexLevels } from "../consts"
 import {
   createCityEntity,
@@ -10,8 +9,10 @@ import { createGrid } from "../layout/grid"
 import { queries } from "../entities"
 import { announcements } from "../layout/announcements"
 import { updatePipelineUi, turnSystem, scoreboardSystem } from "../systems"
-import { createButton } from "../layout/button"
 import { createSidebar } from "../layout/sidebar"
+import { createPlayerDetails } from "../layout/playerDetails"
+import { createCharacterSprites } from "../layout/characters"
+import { createAnalysisWindow } from "../layout/analysis"
 
 export function createGameScreen() {
   let gamescreen = new Container()
@@ -22,7 +23,7 @@ export function createGameScreen() {
   gamescreen.addChild(overlay)
 
   async function init() {
-    // Cards
+    //_Cards
     const cards = await createGrid({
       width: 304,
       height: 80,
@@ -34,34 +35,23 @@ export function createGameScreen() {
     cards.container.position.x = 8
     gamescreen.addChild(cards.container)
 
-    //_ Sidebar
-    const { container, buttons } = await createSidebar()
-    container.position.set(dims.width - 24, 8)
-
-    const [
-      menuButton,
-      analysisButton,
-      notificationButton,
-      mapButton,
-      turnButton,
-    ] = buttons
-
-    gamescreen.addChild(container)
-
-    turnButton.on("click", () => {
-      for (const player of queries.player) {
-        player.readyForNext = true
-        cards.resetView()
-      }
-    })
-
     //_ Player
-    const player = createPlayerEntity()
+    const { character } = await createCharacterSprites()
+    const player = await createPlayerEntity("Player", character)
+    player.scoreboard.container.position.set(64, 16)
     player.scoreboard.addToWorld(gamescreen)
 
     const pipeline = await createPipeline()
-    pipeline.ui.addToWorld(gamescreen, 0, 0)
+    pipeline.ui.addToWorld(gamescreen, 224, 16)
     pipeline.ui.show()
+
+    const playerDetails = await createPlayerDetails({
+      name: player.name,
+      sprite: player.sprite,
+    })
+
+    playerDetails.container.position.set(8, 16)
+    gamescreen.addChild(playerDetails.container)
 
     //_ Cities
     CITIES.forEach(async (city) => {
@@ -75,6 +65,35 @@ export function createGameScreen() {
 
     //_ Announcements
     announcements.addToWorld(gamescreen)
+
+    //_ Analysis
+    const analysis = await createAnalysisWindow()
+    gamescreen.addChild(analysis.container)
+
+    //_ Sidebar
+    const { container: sidebarContainer, buttons } = await createSidebar()
+    sidebarContainer.position.set(dims.width - 24, 8)
+
+    const [
+      menuButton,
+      analysisButton,
+      notificationButton,
+      mapButton,
+      turnButton,
+    ] = buttons
+
+    gamescreen.addChild(sidebarContainer)
+
+    turnButton.on("click", () => {
+      for (const player of queries.player) {
+        player.readyForNext = true
+        cards.resetView()
+      }
+    })
+
+    analysisButton.on("pointerdown", () => {
+      analysis.show()
+    })
   }
 
   Ticker.shared.add(() => {

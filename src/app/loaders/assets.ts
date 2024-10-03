@@ -1,6 +1,4 @@
 import { Assets, Texture, Rectangle } from "pixi.js"
-import navigationSrc from "../../assets/navigation.png"
-import menuSrc from "../../assets/menu.png"
 import cardSrc from "../../assets/card.png"
 import builderSrc from "../../assets/city/builder.png"
 import itemsSrc from "../../assets/city/items.png"
@@ -14,6 +12,9 @@ import windowLargeSrc from "../../assets/ui/windowLarge.png"
 import arrowsSrc from "../../assets/ui/arrows.png"
 import windowSmallSrc from "../../assets/ui/windowSmall.png"
 import buttonsSmallSrc from "../../assets/ui/buttons-small.png"
+import scorecardTextureSrc from "../../assets/ui/scorecard.png"
+import playerDetailsTextureSrc from "../../assets/ui/character-details.png"
+import characterSrc from "../../assets/characters/character.png"
 
 Assets.init({
   manifest: {
@@ -45,27 +46,26 @@ Assets.init({
             alias: "buttonsSmall",
             src: buttonsSmallSrc,
           },
-        ],
-      },
-      {
-        name: "playing",
-        assets: [
           {
-            alias: "navigation",
-            src: navigationSrc,
+            alias: "scorecardTexture",
+            src: scorecardTextureSrc,
           },
           {
-            alias: "menu",
-            src: menuSrc,
+            alias: "playerDetailsTexture",
+            src: playerDetailsTextureSrc,
           },
-        ],
-      },
-      {
-        name: "cards",
-        assets: [
           {
-            alias: "cards",
+            alias: "cardTextures",
             src: cardSrc,
+          },
+        ],
+      },
+      {
+        name: "characters",
+        assets: [
+          {
+            alias: "characterTexture",
+            src: characterSrc,
           },
         ],
       },
@@ -114,6 +114,9 @@ export const loadPlayingAssets = async () => await Assets.loadBundle("playing")
 
 export const loadCityAssets = async () => await Assets.loadBundle("city")
 
+export const loadCharacterAssets = async () =>
+  await Assets.loadBundle("characters")
+
 export const loadPipelineAssets = async () =>
   await Assets.loadBundle("pipeline")
 
@@ -139,11 +142,6 @@ export function createTileset(asset: TextureSource, w: number, h: number) {
   })
 }
 
-const { cards } = await Assets.loadBundle("cards")
-const cardTextures = createTileset(cards, 64, 80)
-
 export async function loadFonts() {
   await Assets.load(pixelifySans)
 }
-
-export { cardTextures }

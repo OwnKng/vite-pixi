@@ -6,6 +6,7 @@ import { createCityCard } from "../cards"
 import { createScoreboard, Scoreboard } from "../views/scoreboard"
 import type { CityView } from "../views/city"
 import { createCityView } from "../views/city"
+import type { Sprite } from "pixi.js"
 
 export type Upgrade = {
   name: string
@@ -36,6 +37,7 @@ export type Player = {
   scoreboard: Scoreboard
   needsUpdate: boolean
   readyForNext: boolean
+  sprite: Sprite
 }
 
 export type City = {
@@ -72,19 +74,20 @@ export const queries = {
   missions: world.with("reward"),
 }
 
-export const createPlayerEntity = () =>
+export const createPlayerEntity = async (name: string, sprite: Sprite) =>
   world.add({
-    name: "Player",
+    name: name,
     money: 1000,
     population: 0,
     soldiers: 0,
     needsUpdate: false,
     readyForNext: false,
-    scoreboard: createScoreboard({
+    scoreboard: await createScoreboard({
       money: 1000,
       population: 0,
       soldiers: 0,
     }),
+    sprite,
   })
 
 export const createPipeline = async () =>
@@ -139,7 +142,7 @@ export const createCityEntity = async ({
   selected?: boolean
   underConstruction?: Upgrade[]
 }) => {
-  const card = createCityCard({ title: name })
+  const card = await createCityCard({ title: name })
 
   const cityEntity = world.add({
     name,
