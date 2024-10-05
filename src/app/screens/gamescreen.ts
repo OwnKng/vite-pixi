@@ -8,12 +8,7 @@ import {
 import { createGrid } from "../layout/grid"
 import { queries } from "../entities"
 import { announcements } from "../layout/announcements"
-import {
-  updatePipelineUi,
-  turnSystem,
-  scoreboardSystem,
-  
-} from "../systems"
+import { updatePipelineUi, turnSystem, scoreboardSystem } from "../systems"
 import { createSidebar } from "../layout/sidebar"
 import { createPlayerDetails } from "../layout/playerDetails"
 import { createCharacterSprites } from "../layout/characters"
@@ -53,6 +48,7 @@ export function createGameScreen() {
     player.scoreboard.container.position.set(64, 16)
     player.scoreboard.addToWorld(gamescreen)
 
+    //_ Pipeline
     const pipeline = await createPipeline()
     pipeline.ui.addToWorld(gamescreen, 224, 16)
     pipeline.ui.show()
@@ -98,6 +94,7 @@ export function createGameScreen() {
       }
     })
 
+    //_ Missions
     const missionsUi = await createMissionsUi()
     gamescreen.addChild(missionsUi.container)
 
@@ -105,6 +102,7 @@ export function createGameScreen() {
       missionsUi.show()
     })
 
+    //_ Analysis
     analysisButton.on("pointerdown", () => {
       analysis.show()
     })

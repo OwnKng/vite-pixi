@@ -34,26 +34,26 @@ export const CITIES = [
   {
     name: "London",
     population: 10,
-    soldiers: 0,
+    soldiers: 4,
   },
   {
     name: "Paris",
     population: 10,
-    soldiers: 0,
+    soldiers: 2,
   },
   {
     name: "Nottingham",
     population: 5,
-    soldiers: 0,
+    soldiers: 1,
   },
   {
     name: "York",
     population: 5,
-    soldiers: 0,
+    soldiers: 1,
   },
   {
     name: "Edinburgh",
     population: 3,
-    soldiers: 0,
+    soldiers: 1,
   },
 ]

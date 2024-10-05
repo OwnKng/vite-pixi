@@ -1,4 +1,4 @@
-import { Container, TextStyle, Text, Sprite } from "pixi.js"
+import { Container, TextStyle, Text } from "pixi.js"
 import { dims } from "../consts"
 import { lightTextStyles } from "../layout/utils"
 import { createButton } from "../layout/button"

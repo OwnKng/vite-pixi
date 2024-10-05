@@ -89,8 +89,8 @@ export const createPlayerEntity = async (
   world.add({
     name: name,
     money: 1000,
-    population: 0,
-    soldiers: 0,
+    population: population,
+    soldiers: soldiers,
     needsUpdate: false,
     readyForNext: false,
     year: year || 1066,
@@ -153,9 +153,11 @@ export const removeFromPipeline = (upgrade: Upgrade) => {
 export const createCityEntity = async ({
   name,
   population,
+  soldiers,
 }: {
   name: string
   population: number
+  soldiers: number
   selected?: boolean
   underConstruction?: Upgrade[]
 }) => {
@@ -166,7 +168,7 @@ export const createCityEntity = async ({
     population,
     card,
     needsUIUpdate: false,
-    soldiers: 0,
+    soldiers,
   })
 
   const view = await createCityView(cityEntity)

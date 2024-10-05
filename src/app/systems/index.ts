@@ -64,7 +64,7 @@ const updateScores = () => {
     player.soldiers = soldiers
     player.year += 1
 
-    player.money += population * 2 - soldiers * 10
+    player.money += population - soldiers * 2
   }
 }
 
