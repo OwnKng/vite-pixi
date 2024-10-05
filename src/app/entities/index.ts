@@ -7,6 +7,7 @@ import { createScoreboard, Scoreboard } from "../views/scoreboard"
 import type { CityView } from "../views/city"
 import { createCityView } from "../views/city"
 import type { Sprite } from "pixi.js"
+import { createMissionCard } from "../views/mission"
 
 export type Upgrade = {
   name: string
@@ -27,6 +28,7 @@ export type Mission = {
   currentValue: number
   readyForNext: boolean
   acknowledged: boolean
+  ui: EntityUI
 }
 
 export type Player = {
@@ -38,11 +40,13 @@ export type Player = {
   needsUpdate: boolean
   readyForNext: boolean
   sprite: Sprite
+  year: number
 }
 
 export type City = {
   name: string
   population: number
+  soldiers: number
   card: EntityUI
   view: CityView
   needsUIUpdate: boolean
@@ -66,7 +70,7 @@ export type View = {
 export const world = new World()
 
 export const queries = {
-  cities: world.with("name", "population"),
+  cities: world.with("card"),
   views: world.with("view"),
   pipeline: world.with("upgrades"),
   player: world.with("money"),
@@ -74,7 +78,14 @@ export const queries = {
   missions: world.with("reward"),
 }
 
-export const createPlayerEntity = async (name: string, sprite: Sprite) =>
+export const createPlayerEntity = async (
+  name: string,
+  sprite: Sprite,
+  money: number,
+  population: number,
+  soldiers: number,
+  year?: number
+) =>
   world.add({
     name: name,
     money: 1000,
@@ -82,10 +93,11 @@ export const createPlayerEntity = async (name: string, sprite: Sprite) =>
     soldiers: 0,
     needsUpdate: false,
     readyForNext: false,
+    year: year || 1066,
     scoreboard: await createScoreboard({
-      money: 1000,
-      population: 0,
-      soldiers: 0,
+      money,
+      population,
+      soldiers,
     }),
     sprite,
   })
@@ -99,15 +111,20 @@ export const createPipeline = async () =>
 
 export const addToPipeline = (upgrade: Upgrade) => {
   const pipeline = queries.pipeline.first
-  pipeline.upgrades.push(upgrade)
 
   for (const player of queries.player) {
+    if (player.money < upgrade.cost) {
+      return
+    }
     player.money -= upgrade.cost
     player.needsUpdate = true
   }
 
+  // Add to pipeline
+  pipeline.upgrades.push(upgrade)
   pipeline.needsUpdate = true
 
+  // Update the city card
   for (const city of queries.cities) {
     if (city.name === upgrade.city) {
       city.card.setBuilding()
@@ -149,6 +166,7 @@ export const createCityEntity = async ({
     population,
     card,
     needsUIUpdate: false,
+    soldiers: 0,
   })
 
   const view = await createCityView(cityEntity)
@@ -162,8 +180,8 @@ export const createMission = async (
   name: string,
   description: string,
   reward: number
-) =>
-  await world.add({
+) => {
+  const mission = await world.add({
     name,
     description,
     reward,
@@ -174,3 +192,17 @@ export const createMission = async (
     acknowledged: false,
     active: false,
   })
+
+  mission.ui = await createMissionCard({
+    name: name,
+    description: description,
+    reward: reward,
+    close: () => {
+      mission.acknowledged = true
+      mission.readyForNext = true
+      mission.active = true
+    },
+  })
+
+  return mission
+}

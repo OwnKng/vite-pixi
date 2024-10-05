@@ -15,6 +15,7 @@ import buttonsSmallSrc from "../../assets/ui/buttons-small.png"
 import scorecardTextureSrc from "../../assets/ui/scorecard.png"
 import playerDetailsTextureSrc from "../../assets/ui/character-details.png"
 import characterSrc from "../../assets/characters/character.png"
+import textInputSrc from "../../assets/ui/textinput.png"
 
 Assets.init({
   manifest: {
@@ -57,6 +58,10 @@ Assets.init({
           {
             alias: "cardTextures",
             src: cardSrc,
+          },
+          {
+            alias: "textInputTexture",
+            src: textInputSrc,
           },
         ],
       },

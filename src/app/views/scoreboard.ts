@@ -33,12 +33,38 @@ export const createScoreboard = async (score: Score) => {
   moneyText.position.x = container.width - 4
   moneyText.position.y = 1
 
+  //_ Population text
+  const populationText = new Text({
+    text: score.population,
+    style: new TextStyle({ ...lightTextStyles }),
+  })
+
+  populationText.scale = 0.125
+  populationText.anchor.set(1, 0)
+  populationText.position.x = container.width - 4
+  populationText.position.y = 1 + 16
+
+  //_ Soldiers text
+  const soldiersText = new Text({
+    text: score.soldiers,
+    style: new TextStyle({ ...lightTextStyles }),
+  })
+
+  soldiersText.scale = 0.125
+  soldiersText.anchor.set(1, 0)
+  soldiersText.position.x = container.width - 4
+  soldiersText.position.y = 1 + 32
+
   container.addChild(moneyText)
+  container.addChild(populationText)
+  container.addChild(soldiersText)
 
   const addToWorld = (parent: Container) => parent.addChild(container)
 
   const update = (score: Score) => {
     moneyText.text = score.money
+    populationText.text = score.population
+    soldiersText.text = score.soldiers
   }
 
   return {

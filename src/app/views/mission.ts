@@ -5,7 +5,7 @@ import { createScrollingTextContainer } from "../layout/scrollingText"
 type MissionUiProps = {
   name: string
   description: string
-  reward: string
+  reward: number
   close: () => void
 }
 
@@ -23,7 +23,8 @@ export const createMissionCard = async ({
 
   const hanldeClose = () => {
     close()
-    w.windowContainer.destroy()
+    w.container.removeFromParent()
+    w.container.destroy()
   }
 
   const textBox = createScrollingTextContainer({
@@ -35,6 +36,6 @@ export const createMissionCard = async ({
   textBox.addToParent(w.contentArea)
 
   return {
-    addToWorld: (parent: Container) => parent.addChild(w.windowContainer),
+    addToWorld: (parent: Container) => parent.addChild(w.container),
   }
 }

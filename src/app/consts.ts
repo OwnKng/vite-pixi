@@ -14,8 +14,8 @@ export const upgrades = [
     name: "house",
     texture: "light",
     cost: 100,
-    population: 100,
-    soliders: 0,
+    population: 1,
+    soldiers: 0,
     description:
       "Houses provide shelter for your citizens. Increasing the number of houses will increase your population and tax base. \n \nCost: 100 \nPopulation: +100",
   },
@@ -24,43 +24,7 @@ export const upgrades = [
     texture: "light",
     cost: 500,
     population: 0,
-    soliders: 10,
-    description:
-      "Barracks provide training for your soldiers. Increasing the number of barracks will increase your army size and defense. \n \nCost: 500 \nSoldiers: +10",
-  },
-  {
-    name: "barracks",
-    texture: "light",
-    cost: 500,
-    population: 0,
-    soliders: 10,
-    description:
-      "Barracks provide training for your soldiers. Increasing the number of barracks will increase your army size and defense. \n \nCost: 500 \nSoldiers: +10",
-  },
-  {
-    name: "barracks",
-    texture: "light",
-    cost: 500,
-    population: 0,
-    soliders: 10,
-    description:
-      "Barracks provide training for your soldiers. Increasing the number of barracks will increase your army size and defense. \n \nCost: 500 \nSoldiers: +10",
-  },
-  {
-    name: "barracks",
-    texture: "light",
-    cost: 500,
-    population: 0,
-    soliders: 10,
-    description:
-      "Barracks provide training for your soldiers. Increasing the number of barracks will increase your army size and defense. \n \nCost: 500 \nSoldiers: +10",
-  },
-  {
-    name: "barracks",
-    texture: "light",
-    cost: 500,
-    population: 0,
-    soliders: 10,
+    soldiers: 10,
     description:
       "Barracks provide training for your soldiers. Increasing the number of barracks will increase your army size and defense. \n \nCost: 500 \nSoldiers: +10",
   },
@@ -69,26 +33,32 @@ export const upgrades = [
 export const CITIES = [
   {
     name: "London",
-    population: 1000,
+    population: 10,
+    soldiers: 0,
   },
   {
     name: "Paris",
-    population: 2000,
+    population: 10,
+    soldiers: 0,
   },
   {
     name: "New York",
-    population: 3000,
+    population: 20,
+    soldiers: 0,
   },
   {
     name: "Tokyo",
-    population: 4000,
+    population: 30,
+    soldiers: 0,
   },
   {
     name: "Beijing",
-    population: 5000,
+    population: 20,
+    soldiers: 0,
   },
   {
     name: "Hamburg",
-    population: 6000,
+    population: 3,
+    soldiers: 0,
   },
 ]

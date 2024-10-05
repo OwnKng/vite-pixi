@@ -1,4 +1,4 @@
-import { Container, TextStyle, Text } from "pixi.js"
+import { Container, TextStyle, Text, Sprite } from "pixi.js"
 import { dims } from "../consts"
 import { lightTextStyles } from "../layout/utils"
 import { createButton } from "../layout/button"
@@ -7,8 +7,9 @@ import { loadCoreAssets } from "../loaders/assets"
 export async function createTitleScreen(onStartButtonClick: () => void) {
   const container = new Container()
 
-  const { buttonTexture } = await loadCoreAssets()
+  const { buttonTexture, textInputTexture } = await loadCoreAssets()
   buttonTexture.source.scaleMode = "nearest"
+  textInputTexture.source.scaleMode = "nearest"
 
   const startGame = createButton({
     buttonText: "Start Game",

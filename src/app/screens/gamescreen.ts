@@ -8,11 +8,17 @@ import {
 import { createGrid } from "../layout/grid"
 import { queries } from "../entities"
 import { announcements } from "../layout/announcements"
-import { updatePipelineUi, turnSystem, scoreboardSystem } from "../systems"
+import {
+  updatePipelineUi,
+  turnSystem,
+  scoreboardSystem,
+  createMissionSystem,
+} from "../systems"
 import { createSidebar } from "../layout/sidebar"
 import { createPlayerDetails } from "../layout/playerDetails"
 import { createCharacterSprites } from "../layout/characters"
 import { createAnalysisWindow } from "../layout/analysis"
+import { createMissionsUi } from "../layout/missions"
 
 export function createGameScreen() {
   let gamescreen = new Container()
@@ -37,7 +43,13 @@ export function createGameScreen() {
 
     //_ Player
     const { character } = await createCharacterSprites()
-    const player = await createPlayerEntity("Player", character)
+    const player = await createPlayerEntity(
+      "Player",
+      character,
+      1000,
+      CITIES.reduce((acc, city) => acc + city.population, 0),
+      CITIES.reduce((acc, city) => acc + city.soldiers, 0)
+    )
     player.scoreboard.container.position.set(64, 16)
     player.scoreboard.addToWorld(gamescreen)
 
@@ -74,13 +86,8 @@ export function createGameScreen() {
     const { container: sidebarContainer, buttons } = await createSidebar()
     sidebarContainer.position.set(dims.width - 24, 8)
 
-    const [
-      menuButton,
-      analysisButton,
-      notificationButton,
-      mapButton,
-      turnButton,
-    ] = buttons
+    const [menuButton, analysisButton, missionsButton, mapButton, turnButton] =
+      buttons
 
     gamescreen.addChild(sidebarContainer)
 
@@ -89,6 +96,13 @@ export function createGameScreen() {
         player.readyForNext = true
         cards.resetView()
       }
+    })
+
+    const missionsUi = await createMissionsUi()
+    gamescreen.addChild(missionsUi.container)
+
+    missionsButton.on("pointerdown", () => {
+      missionsUi.show()
     })
 
     analysisButton.on("pointerdown", () => {

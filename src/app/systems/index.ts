@@ -1,7 +1,7 @@
-import { queries, removeFromPipeline } from "../entities"
+import { createMission, queries, removeFromPipeline } from "../entities"
 import { Container, Sprite } from "pixi.js"
 import { announcements } from "../layout/announcements"
-import { createMissionCard } from "../views/mission"
+import { MISSIONS } from "../data/missions"
 
 export const turnSystem = async (gamescreen: Container) => {
   const readies = []
@@ -11,15 +11,25 @@ export const turnSystem = async (gamescreen: Container) => {
 
   if (readies.length && readies.every((ready) => ready)) {
     buildPipelineSystem()
-    updateScores()
-    announcements.addNotification("Next turn")
 
     for (const player of queries.player) {
       player.readyForNext = false
+      updateScores()
       player.needsUpdate = true
+      await announcements.addNotification(player.year)
     }
 
-    await newMissionSystem(gamescreen)
+    await createMissionSystem()
+    announceMissionSystem(gamescreen)
+  }
+}
+
+const createMissionSystem = async () => {
+  for (const player of queries.player) {
+    if (player.year % 10 === 0) {
+      const mission = MISSIONS[0]
+      await createMission(mission.title, mission.description, mission.reward)
+    }
   }
 }
 
@@ -41,12 +51,20 @@ const buildPipelineSystem = () => {
 }
 
 const updateScores = () => {
+  let population = 0
+  let soldiers = 0
+
   for (const player of queries.player) {
     for (const city of queries.cities) {
-      player.money += city.population * 10
-      player.population += city.population
-      player.soldiers += city.soldiers
+      population += city.population
+      soldiers += city.soldiers
     }
+
+    player.population = population
+    player.soldiers = soldiers
+    player.year += 1
+
+    player.money += population * 2 - soldiers * 10
   }
 }
 
@@ -90,24 +108,12 @@ export const updatePipelineUi = () => {
   }
 }
 
-export const newMissionSystem = async (gamescreen: Container) => {
+const announceMissionSystem = (gamescreen: Container) => {
   for (const mission of queries.missions) {
     if (mission.acknowledged === true) continue
 
-    // Lock the game until acknowledged
+    //_ Lock the game until acknowledged
     mission.readyForNext = false
-
-    const missionUi = await createMissionCard({
-      name: mission.name,
-      description: mission.description,
-      reward: mission.reward,
-      close: () => {
-        mission.acknowledged = true
-        mission.readyForNext = true
-        mission.active = true
-      },
-    })
-
-    missionUi.addToWorld(gamescreen)
+    mission.ui.addToWorld(gamescreen)
   }
 }
