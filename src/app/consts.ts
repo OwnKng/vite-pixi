@@ -42,22 +42,17 @@ export const CITIES = [
     soldiers: 0,
   },
   {
-    name: "New York",
-    population: 20,
+    name: "Nottingham",
+    population: 5,
     soldiers: 0,
   },
   {
-    name: "Tokyo",
-    population: 30,
+    name: "York",
+    population: 5,
     soldiers: 0,
   },
   {
-    name: "Beijing",
-    population: 20,
-    soldiers: 0,
-  },
-  {
-    name: "Hamburg",
+    name: "Edinburgh",
     population: 3,
     soldiers: 0,
   },

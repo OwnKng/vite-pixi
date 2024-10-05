@@ -9,6 +9,7 @@ export type WindowUi = {
   container: Container
   windowContainer: Container
   contentArea: Container
+  getContentAreaDims: () => { width: number; height: number }
 }
 
 type WindowProps = {
@@ -118,5 +119,9 @@ const createWindowContainer = async ({
     container: container,
     windowContainer: windowContainer,
     contentArea,
+    getContentAreaDims: () => ({
+      width: texture.width,
+      height: texture.height - 16,
+    }),
   }
 }

@@ -27,10 +27,12 @@ export const createMissionCard = async ({
     w.container.destroy()
   }
 
+  const dims = w.getContentAreaDims()
+
   const textBox = createScrollingTextContainer({
     text: description,
-    width: w.contentArea.width,
-    height: w.contentArea.height,
+    width: dims.width,
+    height: dims.height,
   })
 
   textBox.addToParent(w.contentArea)
