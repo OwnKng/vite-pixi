@@ -5,3 +5,7 @@
 body {
   overflow: hidden;
 }
+
+body {
+  font-family: "Pixelify Sans Variable", system-ui;
+}

@@ -1,41 +1,111 @@
 import { Assets, Texture, Rectangle } from "pixi.js"
-import navigationSrc from "../../assets/navigation.png"
-import menuSrc from "../../assets/menu.png"
 import cardSrc from "../../assets/card.png"
-import selectedSrc from "../../assets/selected.png"
+import builderSrc from "../../assets/city/builder.png"
+import itemsSrc from "../../assets/city/items.png"
+import pipelineSrc from "../../assets/pipeline.png"
+import lightSrc from "../../assets/light.png"
+import buildButtonSrc from "../../assets/city/buildButton.png"
 import type { TextureSource } from "pixi.js"
+import pixelifySans from "../../assets/fonts/pixelify-sans.woff2"
+import closeButtonSrc from "../../assets/ui/closeButton.png"
+import windowLargeSrc from "../../assets/ui/windowLarge.png"
+import arrowsSrc from "../../assets/ui/arrows.png"
+import windowSmallSrc from "../../assets/ui/windowSmall.png"
+import buttonsSmallSrc from "../../assets/ui/buttons-small.png"
+import scorecardTextureSrc from "../../assets/ui/scorecard.png"
+import playerDetailsTextureSrc from "../../assets/ui/character-details.png"
+import characterSrc from "../../assets/characters/character.png"
+import textInputSrc from "../../assets/ui/textinput.png"
 
 Assets.init({
   manifest: {
     bundles: [
       {
-        name: "playing",
+        name: "core",
         assets: [
           {
-            alias: "navigation",
-            src: navigationSrc,
+            alias: "buttonTexture",
+            src: buildButtonSrc,
           },
           {
-            alias: "menu",
-            src: menuSrc,
+            alias: "closeButtonTexture",
+            src: closeButtonSrc,
           },
-        ],
-      },
-      {
-        name: "cards",
-        assets: [
           {
-            alias: "cards",
+            alias: "windowLarge",
+            src: windowLargeSrc,
+          },
+          {
+            alias: "windowSmall",
+            src: windowSmallSrc,
+          },
+          {
+            alias: "arrowsTexture",
+            src: arrowsSrc,
+          },
+          {
+            alias: "buttonsSmall",
+            src: buttonsSmallSrc,
+          },
+          {
+            alias: "scorecardTexture",
+            src: scorecardTextureSrc,
+          },
+          {
+            alias: "playerDetailsTexture",
+            src: playerDetailsTextureSrc,
+          },
+          {
+            alias: "cardTextures",
             src: cardSrc,
           },
+          {
+            alias: "textInputTexture",
+            src: textInputSrc,
+          },
         ],
       },
       {
-        name: "overlays",
+        name: "characters",
         assets: [
           {
-            alias: "selected",
-            src: selectedSrc,
+            alias: "characterTexture",
+            src: characterSrc,
+          },
+        ],
+      },
+      {
+        name: "city",
+        assets: [
+          {
+            alias: "upgradesTexture",
+            src: builderSrc,
+          },
+          {
+            alias: "itemsTextures",
+            src: itemsSrc,
+          },
+          {
+            alias: "buildButtonTexture",
+            src: buildButtonSrc,
+          },
+        ],
+      },
+      {
+        name: "pipeline",
+        assets: [
+          {
+            alias: "pipelineBackground",
+            src: pipelineSrc,
+          },
+        ],
+      },
+      {
+        name: "upgrades",
+        assets: [
+          {
+            alias: "light",
+            src: lightSrc,
           },
         ],
       },
@@ -43,7 +113,20 @@ Assets.init({
   },
 })
 
+export const loadCoreAssets = async () => await Assets.loadBundle("core")
+
 export const loadPlayingAssets = async () => await Assets.loadBundle("playing")
+
+export const loadCityAssets = async () => await Assets.loadBundle("city")
+
+export const loadCharacterAssets = async () =>
+  await Assets.loadBundle("characters")
+
+export const loadPipelineAssets = async () =>
+  await Assets.loadBundle("pipeline")
+
+export const loadUpgradesAssets = async () =>
+  await Assets.loadBundle("upgrades")
 
 export function createTileset(asset: TextureSource, w: number, h: number) {
   const rows = Math.floor(asset.height / h)
@@ -64,10 +147,6 @@ export function createTileset(asset: TextureSource, w: number, h: number) {
   })
 }
 
-const { cards } = await Assets.loadBundle("cards")
-const cardTextures = createTileset(cards, 64, 80)
-
-const { selected } = await Assets.loadBundle("overlays")
-selected.source.scaleMode = "nearest"
-
-export { cardTextures, selected }
+export async function loadFonts() {
+  await Assets.load(pixelifySans)
+}

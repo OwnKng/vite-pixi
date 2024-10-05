@@ -7,8 +7,17 @@
     <title>Vite + TS</title>
   </head>
   <body>
-    <div id="app">
-      <div id="gamewindow" />
+    <button
+      id="fullscreen"
+      class="absolute top-0 border bg-zinc-800 px-2 rounded text-zinc-300"
+    >
+      Fullscreen
+    </button>
+    <div
+      id="app"
+      class="bg-zinc-950 w-screen h-screen flex justify-center items-center"
+    >
+      <div id="gamewindow" class="shadow-lg rounded overflow-hidden" />
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>

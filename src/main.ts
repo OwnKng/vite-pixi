@@ -1,13 +1,23 @@
 import "./style.css"
 import createApplication from "./app/index.ts"
 import { dims } from "./app/consts.ts"
+import "@fontsource-variable/pixelify-sans"
 
 const container = document.querySelector<HTMLDivElement>("#app")!
-container.className = "w-screen h-screen flex justify-center items-center"
-
 const gamewindow = document.getElementById("gamewindow")!
 
-const desiredAspectRatio = 16 / 9 // Example aspect ratio (16:9)
+const fullscreenButton = document.getElementById("fullscreen")!
+fullscreenButton.addEventListener("click", toggleFullscreen)
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen()
+  } else {
+    document.exitFullscreen()
+  }
+}
+
+const desiredAspectRatio = dims.width / dims.height
 
 function resizeGameWindow() {
   const containerWidth = container.clientWidth
@@ -29,15 +39,17 @@ function resizeGameWindow() {
 async function main() {
   const pixi = createApplication()
 
-  const { app, setPlay } = pixi
+  const { app, loadCoreAssets, startGame } = pixi
 
   await app.init({
     resizeTo: gamewindow,
-    backgroundColor: 0x10141f,
+    backgroundColor: 0x151d28,
   })
 
+  await loadCoreAssets()
   gamewindow.appendChild(app.canvas)
-  await setPlay()
+
+  await startGame()
 }
 
 resizeGameWindow()

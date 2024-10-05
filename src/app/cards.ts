@@ -1,63 +1,27 @@
-import { Sprite, Container, Text } from "pixi.js"
-import { cardTextures } from "./loaders/assets"
-import { ScrollBox } from "@pixi/ui"
-
-const [cardTexture, cardHoveredTexture] = cardTextures
-
-export const createScrollingCards = () => {
-  let items: Card[] = []
-
-  const scrollBox = new ScrollBox({
-    width: 220,
-    height: 116,
-    globalScroll: true,
-    elementsMargin: 8,
-  })
-
-  const reorder = (fn: (a: Card, b: Card) => number) => {}
-
-  const removeItem = (title: string) => {
-    const item = items.find((item) => item.title === title)
-
-    if (!item) return
-
-    const index = items.indexOf(item)
-
-    scrollBox.removeItem(index)
-    items = items.filter((item) => item.title !== title)
-  }
-
-  const addItem = (title: string, onClick: () => void) => {
-    const card = createCard({ title, onClick })
-    scrollBox.addItem(card.container)
-
-    items.push(card)
-  }
-
-  return {
-    scrollBox,
-    addItem,
-    removeItem,
-    reorder,
-  }
-}
+import { Sprite, Container, Text, TextStyle } from "pixi.js"
+import { lightTextStyles } from "./layout/utils"
+import { createTileset, loadCoreAssets } from "./loaders/assets"
 
 type CardProps = {
   title: string
-  onClick: () => void
 }
 
 type Card = {
   title: string
   container: Container
+  setBuilding: () => void
+  removeBuilding: () => void
 }
 
-const createCard = ({ title, onClick }: CardProps): Card => {
+export const createCityCard = async ({ title }: CardProps): Promise<Card> => {
+  const { cardTextures } = await loadCoreAssets()
+  const [cardTexture, cardHoveredTexture] = createTileset(cardTextures, 64, 80)
   const sprite = Sprite.from(cardTexture.texture)
 
   const container = new Container()
   container.addChild(sprite)
   container.cursor = "pointer"
+  container.eventMode = "static"
 
   container.on("mouseenter", () => {
     sprite.texture = cardHoveredTexture.texture
@@ -67,24 +31,44 @@ const createCard = ({ title, onClick }: CardProps): Card => {
     sprite.texture = cardTexture.texture
   })
 
-  container.on("click", onClick)
+  let buildingLabel = new Text({
+    text: "Building",
+    style: {
+      fontSize: 24,
+      fill: 0xfffffe,
+    },
+  })
 
   const text = new Text({
     text: title,
-    style: {
+    style: new TextStyle({
+      ...lightTextStyles,
       fontSize: 48,
-      fill: 0xfffffe,
-    },
+    }),
   })
 
   text.x = 2
   text.y = 52
   text.scale = 0.125
 
+  buildingLabel.x = 2
+  buildingLabel.y = 2
+  buildingLabel.scale = 0.125
+
   container.addChild(text)
+
+  const setBuilding = () => {
+    container.addChild(buildingLabel)
+  }
+
+  const removeBuilding = () => {
+    container.removeChild(buildingLabel)
+  }
 
   return {
     title: title,
     container,
+    setBuilding,
+    removeBuilding,
   }
 }
